@@ -24,6 +24,7 @@ namespace Eternal
 
         virtual void *AsRawPtr() const = 0;
         virtual void Poll() = 0;
+        virtual void Show() = 0;
     };
 
     class WindowClass

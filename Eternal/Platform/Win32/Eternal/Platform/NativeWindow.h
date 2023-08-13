@@ -20,6 +20,7 @@ namespace Eternal
 
         virtual void *AsRawPtr() const override;
         virtual void Poll() override;
+        virtual void Show() override;
     };
 
     class NativeWindowClass : public WindowClass

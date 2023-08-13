@@ -14,6 +14,7 @@ namespace Eternal
     public:
         explicit Core(WindowMonitor &windowMonitor);
 
+        virtual void Start() override;
         virtual void Update() override;
     };
 }

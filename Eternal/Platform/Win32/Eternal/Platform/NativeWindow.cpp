@@ -91,9 +91,8 @@ namespace
 
     void OnResize(WindowListener &listener, LPARAM l)
     {
-        auto &rectangle = *reinterpret_cast<RECT *>(l);
-        auto width = rectangle.right - rectangle.left;
-        auto height = rectangle.top - rectangle.bottom;
+        auto width = LOWORD(l);
+        auto height = HIWORD(l);
         auto size = WindowSize(static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height));
         listener.OnResize(size);
     }
@@ -146,6 +145,11 @@ namespace Eternal
         }
     }
 
+    void NativeWindowHandle::Show()
+    {
+        ShowWindow(m_Handle, SW_SHOWNORMAL);
+    }
+
     NativeWindowClass::NativeWindowClass(HINSTANCE instance, LPCWSTR className):
         m_Instance(instance),
         m_ClassName(className)
@@ -162,10 +166,10 @@ namespace Eternal
         auto options = DWORD(0);
         auto title = ToUtf16(settings.Title);
         auto style = WS_OVERLAPPEDWINDOW;
-        int x = CW_USEDEFAULT;
-        int y = CW_USEDEFAULT;
-        int width = CW_USEDEFAULT;
-        int height = CW_USEDEFAULT;
+        auto x = CW_USEDEFAULT;
+        auto y = CW_USEDEFAULT;
+        auto width = static_cast<int>(settings.Size.Width);
+        auto height = static_cast<int>(settings.Size.Height);
         auto parent = HWND(nullptr);
         auto menu = HMENU(nullptr);
         auto window = CreateWindowExW(options, m_ClassName, title.c_str(), style, x, y, width, height, parent, menu, m_Instance, listener.get());

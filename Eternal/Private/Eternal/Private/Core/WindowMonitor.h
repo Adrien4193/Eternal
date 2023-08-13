@@ -62,6 +62,7 @@ namespace Eternal
             std::unique_ptr<Window> window);
 
         Window &GetWindow() const;
+        void ShowWindow();
         void Update();
     };
 

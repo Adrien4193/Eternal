@@ -7,6 +7,11 @@ namespace Eternal
     {
     }
 
+    void Core::Start()
+    {
+        m_WindowMonitor.ShowWindow();
+    }
+
     void Core::Update()
     {
         m_WindowMonitor.Update();

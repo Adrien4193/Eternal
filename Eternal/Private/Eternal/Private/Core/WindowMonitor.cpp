@@ -19,7 +19,7 @@ namespace Eternal
 
     void WindowPropertyListener::OnSetTitle(const std::string &title)
     {
-        m_Properties.Title = std::move(title);
+        m_Properties.Title = title;
     }
 
     void WindowPropertyListener::OnResize(const WindowSize &size)
@@ -73,6 +73,11 @@ namespace Eternal
     Window &WindowMonitor::GetWindow() const
     {
         return *m_Window;
+    }
+
+    void WindowMonitor::ShowWindow()
+    {
+        m_Handle->Show();
     }
 
     void WindowMonitor::Update()
