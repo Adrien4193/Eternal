@@ -1,22 +1,19 @@
 #pragma once
 
-#include <memory>
+#include <Eternal/Utils/Log.h>
 
 #include "EventLoop.h"
-#include "Log.h"
+#include "Window.h"
 
 namespace Eternal
 {
     class Engine
     {
-    private:
-        std::unique_ptr<EventLoop> m_EventLoop;
-        std::unique_ptr<Logger> m_Logger;
-
     public:
-        explicit Engine(std::unique_ptr<EventLoop> eventLoop, std::unique_ptr<Logger> logger);
+        virtual ~Engine() = default;
 
-        EventLoop &GetEventLoop() const;
-        Logger &GetLogger() const;
+        virtual EventLoop &GetEventLoop() const = 0;
+        virtual Logger &GetLogger() const = 0;
+        virtual Window &GetWindow() const = 0;
     };
 }

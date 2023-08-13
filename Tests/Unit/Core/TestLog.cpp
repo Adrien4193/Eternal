@@ -1,6 +1,6 @@
 #include <Test.h>
 
-#include <Eternal/Core/Log.h>
+#include <Eternal/Utils/Log.h>
 
 class MockHandler : public Eternal::LogHandler
 {

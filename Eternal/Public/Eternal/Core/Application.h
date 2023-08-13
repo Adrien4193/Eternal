@@ -1,39 +1,19 @@
 #pragma once
 
 #include <memory>
-#include <vector>
 
 #include "Engine.h"
 #include "Plugin.h"
 
 namespace Eternal
 {
-    class PluginManager
-    {
-    private:
-        std::vector<std::unique_ptr<Plugin>> m_Plugins;
-        bool m_Running = false;
-
-    public:
-        void Add(std::unique_ptr<Plugin> plugin);
-        void Stop();
-        void Run();
-    };
-
     class Application
     {
-    private:
-        std::unique_ptr<Engine> m_Engine;
-        std::unique_ptr<PluginManager> m_PluginManager;
-
     public:
-        explicit Application(std::unique_ptr<Engine> engine, std::unique_ptr<PluginManager> pluginManager);
-        ~Application();
+        virtual ~Application() = default;
 
-        Engine &GetEngine() const;
-        void AddPlugin(std::unique_ptr<Plugin> plugin);
-        void Run();
+        virtual Engine &GetEngine() const = 0;
+        virtual void AddPlugin(std::unique_ptr<Plugin> plugin) = 0;
+        virtual void Run() = 0;
     };
-
-    std::unique_ptr<Application> CreateApplication(std::string name);
 }
