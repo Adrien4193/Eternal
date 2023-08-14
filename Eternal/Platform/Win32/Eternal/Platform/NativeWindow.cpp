@@ -145,11 +145,6 @@ namespace Eternal
         }
     }
 
-    void NativeWindowHandle::Show()
-    {
-        ShowWindow(m_Handle, SW_SHOWNORMAL);
-    }
-
     NativeWindowClass::NativeWindowClass(HINSTANCE instance, LPCWSTR className):
         m_Instance(instance),
         m_ClassName(className)
@@ -177,10 +172,11 @@ namespace Eternal
         {
             throw LastErrorToException("Failed to create window");
         }
+        ShowWindow(window, SW_NORMAL);
         return std::make_unique<NativeWindowHandle>(window, std::move(listener));
     }
 
-    std::unique_ptr<WindowClass> CreateWindowClass(HINSTANCE instance, const std::string &name)
+    std::unique_ptr<WindowClass> CreateNativeWindowClass(HINSTANCE instance, const std::string &name)
     {
         auto wname = ToUtf16(name);
         auto settings = WNDCLASSW();
@@ -196,9 +192,9 @@ namespace Eternal
         return std::make_unique<NativeWindowClass>(instance, className);
     }
 
-    std::unique_ptr<WindowClass> CreateWindowClass(const std::string &name)
+    std::unique_ptr<WindowClass> CreateNativeWindowClass(const std::string &name)
     {
         auto instance = GetModuleHandleW(nullptr);
-        return CreateWindowClass(instance, name);
+        return CreateNativeWindowClass(instance, name);
     }
 }

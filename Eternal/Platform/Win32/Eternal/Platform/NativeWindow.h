@@ -20,7 +20,6 @@ namespace Eternal
 
         virtual void *AsRawPtr() const override;
         virtual void Poll() override;
-        virtual void Show() override;
     };
 
     class NativeWindowClass : public WindowClass
@@ -36,6 +35,6 @@ namespace Eternal
         virtual std::unique_ptr<WindowHandle> Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener) override;
     };
 
-    std::unique_ptr<WindowClass> CreateWindowClass(HINSTANCE instance, const std::string &name);
-    std::unique_ptr<WindowClass> CreateWindowClass(const std::string &name);
+    std::unique_ptr<WindowClass> CreateNativeWindowClass(HINSTANCE instance, const std::string &name);
+    std::unique_ptr<WindowClass> CreateNativeWindowClass(const std::string &name);
 }

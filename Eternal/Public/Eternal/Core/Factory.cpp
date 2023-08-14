@@ -1,33 +1,25 @@
 #include "Factory.h"
 
-#include <Eternal/Private/Core/ApplicationMonitor.h>
-#include <Eternal/Private/Core/Core.h>
-#include <Eternal/Private/Core/EngineMonitor.h>
-#include <Eternal/Private/Core/EventLoopMonitor.h>
-#include <Eternal/Private/Core/WindowMonitor.h>
+#include <Eternal/Private/Core/ApplicationPrivate.h>
+#include <Eternal/Private/Core/EnginePrivate.h>
+#include <Eternal/Private/Core/EventLoopPrivate.h>
+#include <Eternal/Private/Core/WindowPrivate.h>
 
 namespace Eternal
 {
     std::unique_ptr<Application> CreateApplication(const std::string &name)
     {
-        auto eventLoopMonitor = CreateEventLoopMonitor();
+        auto eventLoop = std::make_unique<EventLoopPrivate>();
+        auto eventLoopAdapter = std::make_unique<EventLoopAdapter>(*eventLoop);
+
         auto logger = CreateConsoleLogger(name);
-        auto windowMonitor = CreateWindowMonitor({name, 200, 200});
 
-        auto core = std::make_unique<Core>(*windowMonitor);
+        auto window = CreateWindowPrivate({name, 200, 200});
+        auto windowAdapter = std::make_unique<WindowAdapter>(*window);
 
-        auto properties = std::make_unique<EngineProperties>();
-        properties->EventLoopMonitor = std::move(eventLoopMonitor);
-        properties->Logger = std::move(logger);
-        properties->WindowMonitor = std::move(windowMonitor);
+        auto engineAdapter = std::make_unique<EngineAdapter>(std::move(eventLoopAdapter), *logger, std::move(windowAdapter));
+        auto engine = std::make_unique<EnginePrivate>(std::move(eventLoop), std::move(logger), std::move(window));
 
-        auto adapter = std::make_unique<EngineAdapter>(*properties);
-
-        auto engine = std::make_unique<EngineMonitor>(std::move(properties), std::move(adapter));
-
-        auto plugins = std::vector<std::unique_ptr<Plugin>>();
-        plugins.push_back(std::move(core));
-
-        return std::make_unique<ApplicationMonitor>(std::move(engine), std::move(plugins));
+        return std::make_unique<ApplicationPrivate>(std::move(engine), std::move(engineAdapter));
     }
 }
