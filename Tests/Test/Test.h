@@ -59,6 +59,7 @@ public:
 TestCase CreateTestCase(std::string name);
 
 void Assert(bool value, std::source_location source = std::source_location::current());
+void AssertFalse(bool value, std::source_location source = std::source_location::current());
 
 template<typename ExceptionType, typename CallableType>
 void AssertThrow(CallableType &&callable, std::source_location source = std::source_location::current())

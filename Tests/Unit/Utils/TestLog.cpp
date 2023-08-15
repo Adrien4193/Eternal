@@ -62,7 +62,7 @@ int main()
         logger.Trace("Not logged");
         Assert(!called);
 
-        logger.Info("Not logged");
+        logger.Info("Logged");
         Assert(called);
     };
 

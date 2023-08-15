@@ -25,6 +25,5 @@ namespace Eternal
         virtual void *GetNativeHandle() const = 0;
         virtual const std::string &GetTitle() const = 0;
         virtual const WindowSize &GetSize() const = 0;
-        virtual bool IsClosed() const = 0;
     };
 }

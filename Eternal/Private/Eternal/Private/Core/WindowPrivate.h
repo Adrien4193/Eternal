@@ -61,6 +61,5 @@ namespace Eternal
         virtual void *GetNativeHandle() const override;
         virtual const std::string &GetTitle() const override;
         virtual const WindowSize &GetSize() const override;
-        virtual bool IsClosed() const override;
     };
 }

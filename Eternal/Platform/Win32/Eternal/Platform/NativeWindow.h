@@ -30,7 +30,7 @@ namespace Eternal
 
     public:
         explicit NativeWindowClass(HINSTANCE instance, LPCWSTR className);
-        ~NativeWindowClass();
+        virtual ~NativeWindowClass();
 
         virtual std::unique_ptr<WindowHandle> Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener) override;
     };

@@ -82,3 +82,8 @@ void Assert(bool value, std::source_location source)
         throw AssertionFailed(source);
     }
 }
+
+void AssertFalse(bool value, std::source_location source)
+{
+    Assert(!value, source);
+}

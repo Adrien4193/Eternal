@@ -95,9 +95,4 @@ namespace Eternal
     {
         return m_Window.GetSize();
     }
-
-    bool WindowAdapter::IsClosed() const
-    {
-        return m_Window.IsClosed();
-    }
 }

@@ -65,7 +65,7 @@ QualifierAlignment: Custom # Warning
 QualifierOrder: ['static', 'inline', 'const', 'volatile', 'type'] # Warning
 ReferenceAlignment: Right
 ReflowComments: true
-RequiresClausePosition: OwnLine
+RequiresClausePosition: WithPreceding
 SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 1
 SortIncludes: CaseSensitive
