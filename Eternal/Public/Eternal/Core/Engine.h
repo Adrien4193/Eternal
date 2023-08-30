@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Eternal/Utils/Log.h>
+#include <Eternal/Core/Log.h>
 
 #include "EventLoop.h"
 #include "Window.h"

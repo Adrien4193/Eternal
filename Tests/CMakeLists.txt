@@ -2,7 +2,7 @@ include(CTest)
 
 add_subdirectory(Test)
 
-file(GLOB_RECURSE ETERNAL_TESTS Unit/*.cpp)
+file(GLOB_RECURSE ETERNAL_TESTS Unit/Test*.cpp)
 
 foreach(TEST_SOURCE ${ETERNAL_TESTS})
     get_filename_component(TEST_NAME ${TEST_SOURCE} NAME_WLE)
