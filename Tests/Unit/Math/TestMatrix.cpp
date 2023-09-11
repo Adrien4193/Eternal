@@ -8,7 +8,18 @@ int main()
 
     auto test = CreateTestCase("Matrix");
 
-    test["Construction"] = [&]
+    test["Default"] = []
+    {
+        auto matrix = Matrix<int, 3, 2>();
+        Assert(matrix[0] == 0);
+        Assert(matrix[1] == 0);
+        Assert(matrix[2] == 0);
+        Assert(matrix[3] == 0);
+        Assert(matrix[4] == 0);
+        Assert(matrix[5] == 0);
+    };
+
+    test["Construction"] = []
     {
         auto matrix = Matrix<int, 3, 2>(0, 1, 2, 3, 4, 5);
         Assert(matrix[0] == 0);
@@ -25,19 +36,18 @@ int main()
         Assert(matrix(2, 1) == 5);
     };
 
-    test["Assignment"] = [&]
+    test["Assignment"] = []
     {
         auto a = Matrix<int, 3, 2>(1, 2, 3, 4, 5, 6);
         auto b = Matrix<int, 3, 2>(7, 8, 9, 10, 11, 12);
-
         a = b;
         Assert(a == b);
     };
 
     test["Compare"] = []
     {
-        auto a = Matrix<float, 1, 2>(1, 3);
-        auto b = Matrix<float, 1, 2>(1, 3);
+        auto a = Matrix<int, 1, 2>(1, 3);
+        auto b = Matrix<int, 1, 2>(1, 3);
 
         Assert(a == b);
         AssertFalse(a != b);
@@ -56,7 +66,7 @@ int main()
         Assert(b >= a);
     };
 
-    test["Operators"] = [&]
+    test["Operators"] = []
     {
         auto a = Matrix<int, 2, 2>(1, 2, 3, 4);
         auto b = Matrix<int, 2, 2>(5, 6, 7, 8);
@@ -68,7 +78,9 @@ int main()
         Assert(b - a == Matrix<int, 2, 2>(4, 4, 4, 4));
         Assert(a * b == Matrix<int, 2, 2>(5, 12, 21, 32));
         Assert(a * 2 == Matrix<int, 2, 2>(2, 4, 6, 8));
+        Assert(2 * a == a * 2);
         Assert(b / 2 == Matrix<int, 2, 2>(2, 3, 3, 4));
+        Assert(4 / a == Matrix<int, 2, 2>(4, 2, 1, 1));
 
         a += b;
         Assert(a == Matrix<int, 2, 2>(6, 8, 10, 12));
@@ -92,13 +104,11 @@ int main()
     test["Iterate"] = []
     {
         auto matrix = Matrix<int, 2, 3>(1, 2, 3, 4, 5, 6);
-
         auto count = 0;
         for (auto i : matrix)
         {
             count += i;
         }
-
         Assert(count == 21);
     };
 

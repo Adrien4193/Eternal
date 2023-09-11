@@ -21,8 +21,7 @@ std::string FormatFailureInfo(const FailureInfo &info)
     auto &source = info.Source;
     auto file = source.file_name();
     auto line = source.line();
-    auto column = source.column();
-    return std::format("Test case '{}.{}' failed at {}({}:{}).", testCase, test, file, line, column);
+    return std::format("Test case '{}.{}' failed at {}:{}.", testCase, test, file, line);
 }
 
 void ConsoleHandler::Handle(const FailureInfo &info)

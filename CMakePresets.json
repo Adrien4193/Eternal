@@ -2,35 +2,65 @@
     "version": 5,
     "configurePresets": [
         {
-            "name": "windows-base",
+            "name": "default",
             "hidden": true,
             "binaryDir": "${sourceDir}/Build/${presetName}",
-            "installDir": "${sourceDir}/Install/${presetName}",
+            "installDir": "${sourceDir}/Install/${presetName}"
+        },
+        {
+            "name": "window-x64",
+            "displayName": "Window x64",
+            "inherits": "default",
+            "generator": "Visual Studio 17 2022",
             "architecture": {
                 "value": "x64",
-                "strategy": "external"
+                "strategy": "set"
             },
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
                 "rhs": "Windows"
             }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "configurePreset": "window-x64",
+            "configuration": "Debug"
         },
         {
-            "name": "x64-debug",
-            "displayName": "x64 Debug",
-            "inherits": "windows-base",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+            "name": "release",
+            "displayName": "Release",
+            "configurePreset": "window-x64",
+            "configuration": "Release"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "hidden": true,
+            "configurePreset": "window-x64",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
             }
         },
         {
-            "name": "x64-release",
-            "displayName": "x64 Release",
-            "inherits": "x64-debug",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            }
+            "name": "debug",
+            "displayName": "Debug",
+            "inherits": "default",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "inherits": "default",
+            "configuration": "Release"
         }
     ]
 }
