@@ -8,7 +8,7 @@ namespace Eternal
     {
     }
 
-    Engine &ApplicationPrivate::GetEngine() const
+    auto ApplicationPrivate::GetEngine() const -> Engine &
     {
         return *m_Interface;
     }

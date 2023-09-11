@@ -11,13 +11,13 @@ public:
     {
     }
 
-    virtual void Update() override
+    void Update() override
     {
         m_Logger.Info("Test: {}", 1);
     }
 };
 
-int main()
+auto main() -> int
 {
     auto application = Eternal::CreateApplication("Sandbox");
     auto &engine = application->GetEngine();

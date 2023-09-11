@@ -4,7 +4,7 @@
 
 namespace Eternal
 {
-    std::unique_ptr<WindowProperties> CreateWindowProperties(const WindowSettings &settings)
+    auto CreateWindowProperties(const WindowSettings &settings) -> std::unique_ptr<WindowProperties>
     {
         auto properties = std::make_unique<WindowProperties>();
         properties->Title = settings.Title;
@@ -42,22 +42,22 @@ namespace Eternal
     {
     }
 
-    void *WindowPrivate::GetNativeHandle() const
+    auto WindowPrivate::GetNativeHandle() const -> void *
     {
         return m_Handle->AsRawPtr();
     }
 
-    const std::string &WindowPrivate::GetTitle() const
+    auto WindowPrivate::GetTitle() const -> const std::string &
     {
         return m_Properties->Title;
     }
 
-    const WindowSize &WindowPrivate::GetSize() const
+    auto WindowPrivate::GetSize() const -> const WindowSize &
     {
         return m_Properties->Size;
     }
 
-    bool WindowPrivate::IsClosed() const
+    auto WindowPrivate::IsClosed() const -> bool
     {
         return m_Properties->Closed;
     }
@@ -67,7 +67,7 @@ namespace Eternal
         m_Handle->Poll();
     }
 
-    std::unique_ptr<WindowPrivate> CreateWindowPrivate(const WindowSettings &settings)
+    auto CreateWindowPrivate(const WindowSettings &settings) -> std::unique_ptr<WindowPrivate>
     {
         auto cls = CreateNativeWindowClass("Eternal");
         auto properties = CreateWindowProperties(settings);
@@ -81,17 +81,17 @@ namespace Eternal
     {
     }
 
-    void *WindowAdapter::GetNativeHandle() const
+    auto WindowAdapter::GetNativeHandle() const -> void *
     {
         return m_Window.GetNativeHandle();
     }
 
-    const std::string &WindowAdapter::GetTitle() const
+    auto WindowAdapter::GetTitle() const -> const std::string &
     {
         return m_Window.GetTitle();
     }
 
-    const WindowSize &WindowAdapter::GetSize() const
+    auto WindowAdapter::GetSize() const -> const WindowSize &
     {
         return m_Window.GetSize();
     }

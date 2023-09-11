@@ -13,14 +13,14 @@ public:
     {
     }
 
-    virtual void Handle(const Eternal::LogRecord &record) override
+    void Handle(const Eternal::LogRecord &record) override
     {
         (void)record;
         m_Called = true;
     }
 };
 
-int main()
+auto main() -> int
 {
     auto test = CreateTestCase("Log");
 
@@ -42,7 +42,7 @@ int main()
         record.Message = "This is a test.";
 
         auto message = Eternal::FormatLogRecord(record);
-        auto expected = "[Debug][Test]: This is a test.";
+        const auto *expected = "[Debug][Test]: This is a test.";
         Assert(message == expected);
     };
 

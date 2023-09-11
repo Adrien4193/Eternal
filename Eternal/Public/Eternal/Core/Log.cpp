@@ -5,7 +5,7 @@
 
 namespace Eternal
 {
-    std::string_view GetLogLevelName(LogLevel level)
+    auto GetLogLevelName(LogLevel level) -> std::string_view
     {
         switch (level)
         {
@@ -28,7 +28,7 @@ namespace Eternal
         }
     }
 
-    std::string FormatLogRecord(const LogRecord &record)
+    auto FormatLogRecord(const LogRecord &record) -> std::string
     {
         auto level = GetLogLevelName(record.Level);
         return std::format("[{}][{}]: {}", level, record.Name, record.Message);
@@ -46,12 +46,12 @@ namespace Eternal
     {
     }
 
-    const std::string &Logger::GetName() const
+    auto Logger::GetName() const -> const std::string &
     {
         return m_Name;
     }
 
-    LogLevel Logger::GetLevel() const
+    auto Logger::GetLevel() const -> LogLevel
     {
         return m_Level;
     }
@@ -61,12 +61,12 @@ namespace Eternal
         m_Level = level;
     }
 
-    bool Logger::IsEnabled(LogLevel level) const
+    auto Logger::IsEnabled(LogLevel level) const -> bool
     {
         return level >= m_Level;
     }
 
-    std::unique_ptr<Logger> CreateConsoleLogger(std::string name)
+    auto CreateConsoleLogger(std::string name) -> std::unique_ptr<Logger>
     {
         return std::make_unique<Logger>(std::move(name), LogLevel::Info, std::make_unique<ConsoleLogHandler>());
     }

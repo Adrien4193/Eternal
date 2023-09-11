@@ -7,20 +7,20 @@ namespace
 {
     using namespace Eternal;
 
-    std::runtime_error LastErrorToException(const std::string &message)
+    auto LastErrorToException(const std::string &message) -> std::runtime_error
     {
         auto code = GetLastError();
         auto description = std::format("{} (code = {})", message, code);
         return std::runtime_error(description);
     }
 
-    std::string ToUtf8(std::wstring_view value)
+    auto ToUtf8(std::wstring_view value) -> std::string
     {
         if (value.empty())
         {
             return {};
         }
-        auto ptr = value.data();
+        const auto *ptr = value.data();
         auto size = static_cast<int>(value.size());
         auto required = WideCharToMultiByte(CP_UTF8, 0, ptr, size, nullptr, 0, nullptr, nullptr);
         if (required <= 0)
@@ -36,13 +36,13 @@ namespace
         return result;
     }
 
-    std::wstring ToUtf16(std::string_view value)
+    auto ToUtf16(std::string_view value) -> std::wstring
     {
         if (value.empty())
         {
             return {};
         }
-        auto ptr = value.data();
+        const auto *ptr = value.data();
         auto size = static_cast<int>(value.size());
         auto required = MultiByteToWideChar(CP_UTF8, 0, ptr, size, nullptr, 0);
         if (required <= 0)
@@ -58,22 +58,22 @@ namespace
         return result;
     }
 
-    WindowListener &GetListener(HWND window)
+    auto GetListener(HWND window) -> WindowListener &
     {
         auto ptr = GetWindowLongPtrW(window, GWLP_USERDATA);
         return *reinterpret_cast<WindowListener *>(ptr);
     }
 
-    WindowListener &SetListener(HWND window, LPARAM l)
+    auto SetListener(HWND window, LPARAM l) -> WindowListener &
     {
-        auto settings = reinterpret_cast<CREATESTRUCT *>(l);
-        auto data = settings->lpCreateParams;
+        auto *settings = reinterpret_cast<CREATESTRUCT *>(l);
+        auto *data = settings->lpCreateParams;
         auto ptr = reinterpret_cast<LONG_PTR>(data);
         SetWindowLongPtrW(window, GWLP_USERDATA, ptr);
         return *reinterpret_cast<WindowListener *>(data);
     }
 
-    WindowListener &GetOrSetListener(HWND window, UINT message, LPARAM l)
+    auto GetOrSetListener(HWND window, UINT message, LPARAM l) -> WindowListener &
     {
         if (message != WM_CREATE)
         {
@@ -84,9 +84,9 @@ namespace
 
     void OnSetTitle(WindowListener &listener, LPARAM l)
     {
-        auto wtitle = reinterpret_cast<LPCWSTR>(l);
+        const auto *wtitle = reinterpret_cast<LPCWSTR>(l);
         auto title = ToUtf8(wtitle);
-        listener.OnSetTitle(std::move(title));
+        listener.OnSetTitle(title);
     }
 
     void OnResize(WindowListener &listener, LPARAM l)
@@ -97,7 +97,7 @@ namespace
         listener.OnResize(size);
     }
 
-    LRESULT CALLBACK ProcessMessage(HWND window, UINT message, WPARAM w, LPARAM l)
+    auto CALLBACK ProcessMessage(HWND window, UINT message, WPARAM w, LPARAM l) -> LRESULT
     {
         auto &listener = GetOrSetListener(window, message, l);
         switch (message)
@@ -130,7 +130,7 @@ namespace Eternal
         DestroyWindow(m_Handle);
     }
 
-    void *NativeWindowHandle::AsRawPtr() const
+    auto NativeWindowHandle::AsRawPtr() const -> void *
     {
         return m_Handle;
     }
@@ -138,7 +138,7 @@ namespace Eternal
     void NativeWindowHandle::Poll()
     {
         auto message = MSG();
-        while (PeekMessageW(&message, m_Handle, 0, 0, PM_REMOVE))
+        while (PeekMessageW(&message, m_Handle, 0, 0, PM_REMOVE) != 0)
         {
             TranslateMessage(&message);
             DispatchMessageW(&message);
@@ -156,7 +156,7 @@ namespace Eternal
         UnregisterClassW(m_ClassName, m_Instance);
     }
 
-    std::unique_ptr<WindowHandle> NativeWindowClass::Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener)
+    auto NativeWindowClass::Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener) -> std::unique_ptr<WindowHandle>
     {
         auto options = DWORD(0);
         auto title = ToUtf16(settings.Title);
@@ -165,10 +165,10 @@ namespace Eternal
         auto y = CW_USEDEFAULT;
         auto width = static_cast<int>(settings.Size.Width);
         auto height = static_cast<int>(settings.Size.Height);
-        auto parent = HWND(nullptr);
-        auto menu = HMENU(nullptr);
-        auto window = CreateWindowExW(options, m_ClassName, title.c_str(), style, x, y, width, height, parent, menu, m_Instance, listener.get());
-        if (!window)
+        auto *parent = HWND(nullptr);
+        auto *menu = HMENU(nullptr);
+        auto *window = CreateWindowExW(options, m_ClassName, title.c_str(), style, x, y, width, height, parent, menu, m_Instance, listener.get());
+        if (window == nullptr)
         {
             throw LastErrorToException("Failed to create window");
         }
@@ -176,7 +176,7 @@ namespace Eternal
         return std::make_unique<NativeWindowHandle>(window, std::move(listener));
     }
 
-    std::unique_ptr<WindowClass> CreateNativeWindowClass(HINSTANCE instance, const std::string &name)
+    auto CreateNativeWindowClass(HINSTANCE instance, const std::string &name) -> std::unique_ptr<WindowClass>
     {
         auto wname = ToUtf16(name);
         auto settings = WNDCLASSW();
@@ -184,17 +184,17 @@ namespace Eternal
         settings.hInstance = instance;
         settings.lpszClassName = wname.c_str();
         auto atom = RegisterClassW(&settings);
-        if (!atom)
+        if (atom == 0)
         {
             throw LastErrorToException("Failed to create window class");
         }
-        auto className = reinterpret_cast<LPCWSTR>(atom);
+        const auto *className = reinterpret_cast<LPCWSTR>(atom);
         return std::make_unique<NativeWindowClass>(instance, className);
     }
 
-    std::unique_ptr<WindowClass> CreateNativeWindowClass(const std::string &name)
+    auto CreateNativeWindowClass(const std::string &name) -> std::unique_ptr<WindowClass>
     {
-        auto instance = GetModuleHandleW(nullptr);
+        auto *instance = GetModuleHandleW(nullptr);
         return CreateNativeWindowClass(instance, name);
     }
 }

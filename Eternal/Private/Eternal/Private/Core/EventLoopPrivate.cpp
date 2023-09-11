@@ -2,7 +2,7 @@
 
 namespace Eternal
 {
-    bool EventLoopPrivate::IsRunning() const
+    auto EventLoopPrivate::IsRunning() const -> bool
     {
         return m_Running;
     }

@@ -70,6 +70,30 @@ namespace Eternal
     };
 
     template<typename T, std::size_t M, std::size_t N>
+    constexpr auto begin(const Eternal::Matrix<T, M, N> &value) -> const T *
+    {
+        return value.GetData();
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto begin(Eternal::Matrix<T, M, N> &value) -> T *
+    {
+        return value.GetData();
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto end(const Eternal::Matrix<T, M, N> &value) -> const T *
+    {
+        return value.GetData() + value.ComponentCount;
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto end(Eternal::Matrix<T, M, N> &value) -> T *
+    {
+        return value.GetData() + value.ComponentCount;
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
     constexpr auto operator-(Matrix<T, M, N> value) -> Matrix<T, M, N>
     {
         for (auto i = std::size_t(0); i < value.ComponentCount; ++i)
@@ -202,32 +226,5 @@ namespace Eternal
             right[i] = factor / right[i];
         }
         return right;
-    }
-}
-
-namespace std
-{
-    template<typename T, std::size_t M, std::size_t N>
-    constexpr auto begin(const Eternal::Matrix<T, M, N> &value) -> const T *
-    {
-        return value.GetData();
-    }
-
-    template<typename T, std::size_t M, std::size_t N>
-    constexpr auto begin(Eternal::Matrix<T, M, N> &value) -> T *
-    {
-        return value.GetData();
-    }
-
-    template<typename T, std::size_t M, std::size_t N>
-    constexpr auto end(const Eternal::Matrix<T, M, N> &value) -> const T *
-    {
-        return value.GetData() + value.ComponentCount;
-    }
-
-    template<typename T, std::size_t M, std::size_t N>
-    constexpr auto end(Eternal::Matrix<T, M, N> &value) -> T *
-    {
-        return value.GetData() + value.ComponentCount;
     }
 }

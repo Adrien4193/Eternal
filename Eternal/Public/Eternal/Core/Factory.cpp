@@ -7,7 +7,7 @@
 
 namespace Eternal
 {
-    std::unique_ptr<Application> CreateApplication(const std::string &name)
+    auto CreateApplication(const std::string &name) -> std::unique_ptr<Application>
     {
         auto eventLoop = std::make_unique<EventLoopPrivate>();
         auto eventLoopAdapter = std::make_unique<EventLoopAdapter>(*eventLoop);

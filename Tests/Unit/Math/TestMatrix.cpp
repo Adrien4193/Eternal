@@ -2,7 +2,7 @@
 
 #include <Eternal/Math/Matrix.h>
 
-int main()
+auto main() -> int
 {
     using namespace Eternal;
 
