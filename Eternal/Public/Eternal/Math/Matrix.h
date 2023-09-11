@@ -155,13 +155,12 @@ namespace Eternal
         return left;
     }
 
-    template<typename T, std::size_t M, std::size_t N, typename U>
-    constexpr auto operator*=(Matrix<T, M, N> &left, U right) -> Matrix<T, M, N> &
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto operator*=(Matrix<T, M, N> &left, T right) -> Matrix<T, M, N> &
     {
-        auto factor = static_cast<T>(right);
         for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
         {
-            left[i] *= factor;
+            left[i] *= right;
         }
         return left;
     }
@@ -172,14 +171,14 @@ namespace Eternal
         return left *= right;
     }
 
-    template<typename T, std::size_t M, std::size_t N, typename U>
-    constexpr auto operator*(Matrix<T, M, N> left, U right) -> Matrix<T, M, N>
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto operator*(Matrix<T, M, N> left, T right) -> Matrix<T, M, N>
     {
         return left *= right;
     }
 
-    template<typename T, std::size_t M, std::size_t N, typename U>
-    constexpr auto operator*(U left, Matrix<T, M, N> right) -> Matrix<T, M, N>
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto operator*(T left, Matrix<T, M, N> right) -> Matrix<T, M, N>
     {
         return right *= left;
     }
@@ -194,13 +193,12 @@ namespace Eternal
         return left;
     }
 
-    template<typename T, std::size_t M, std::size_t N, typename U>
-    constexpr auto operator/=(Matrix<T, M, N> &left, U right) -> Matrix<T, M, N> &
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto operator/=(Matrix<T, M, N> &left, T right) -> Matrix<T, M, N> &
     {
-        auto factor = static_cast<T>(right);
         for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
         {
-            left[i] /= factor;
+            left[i] /= right;
         }
         return left;
     }
@@ -211,19 +209,18 @@ namespace Eternal
         return left /= right;
     }
 
-    template<typename T, std::size_t M, std::size_t N, typename U>
-    constexpr auto operator/(Matrix<T, M, N> left, U right) -> Matrix<T, M, N>
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto operator/(Matrix<T, M, N> left, T right) -> Matrix<T, M, N>
     {
         return left /= right;
     }
 
-    template<typename T, std::size_t M, std::size_t N, typename U>
-    constexpr auto operator/(U left, Matrix<T, M, N> right) -> Matrix<T, M, N>
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr auto operator/(T left, Matrix<T, M, N> right) -> Matrix<T, M, N>
     {
-        auto factor = static_cast<T>(left);
         for (auto i = std::size_t(0); i < right.ComponentCount; ++i)
         {
-            right[i] = factor / right[i];
+            right[i] = left / right[i];
         }
         return right;
     }
