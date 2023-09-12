@@ -7,14 +7,14 @@ namespace
 {
     using namespace Eternal;
 
-    auto LastErrorToException(const std::string &message) -> std::runtime_error
+    std::runtime_error LastErrorToException(const std::string &message)
     {
         auto code = GetLastError();
         auto description = std::format("{} (code = {})", message, code);
         return std::runtime_error(description);
     }
 
-    auto ToUtf8(std::wstring_view value) -> std::string
+    std::string ToUtf8(std::wstring_view value)
     {
         if (value.empty())
         {
@@ -36,7 +36,7 @@ namespace
         return result;
     }
 
-    auto ToUtf16(std::string_view value) -> std::wstring
+    std::wstring ToUtf16(std::string_view value)
     {
         if (value.empty())
         {
@@ -58,13 +58,13 @@ namespace
         return result;
     }
 
-    auto GetListener(HWND window) -> WindowListener &
+    WindowListener &GetListener(HWND window)
     {
         auto ptr = GetWindowLongPtrW(window, GWLP_USERDATA);
         return *reinterpret_cast<WindowListener *>(ptr);
     }
 
-    auto SetListener(HWND window, LPARAM l) -> WindowListener &
+    WindowListener &SetListener(HWND window, LPARAM l)
     {
         auto *settings = reinterpret_cast<CREATESTRUCT *>(l);
         auto *data = settings->lpCreateParams;
@@ -73,7 +73,7 @@ namespace
         return *reinterpret_cast<WindowListener *>(data);
     }
 
-    auto GetOrSetListener(HWND window, UINT message, LPARAM l) -> WindowListener &
+    WindowListener &GetOrSetListener(HWND window, UINT message, LPARAM l)
     {
         if (message != WM_CREATE)
         {
@@ -97,7 +97,7 @@ namespace
         listener.OnResize(size);
     }
 
-    auto CALLBACK ProcessMessage(HWND window, UINT message, WPARAM w, LPARAM l) -> LRESULT
+    LRESULT CALLBACK ProcessMessage(HWND window, UINT message, WPARAM w, LPARAM l)
     {
         auto &listener = GetOrSetListener(window, message, l);
         switch (message)
@@ -130,7 +130,7 @@ namespace Eternal
         DestroyWindow(m_Handle);
     }
 
-    auto NativeWindowHandle::AsRawPtr() const -> void *
+    void *NativeWindowHandle::AsRawPtr() const
     {
         return m_Handle;
     }
@@ -156,7 +156,7 @@ namespace Eternal
         UnregisterClassW(m_ClassName, m_Instance);
     }
 
-    auto NativeWindowClass::Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener) -> std::unique_ptr<WindowHandle>
+    std::unique_ptr<WindowHandle> NativeWindowClass::Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener)
     {
         auto options = DWORD(0);
         auto title = ToUtf16(settings.Title);
@@ -176,7 +176,7 @@ namespace Eternal
         return std::make_unique<NativeWindowHandle>(window, std::move(listener));
     }
 
-    auto CreateNativeWindowClass(HINSTANCE instance, const std::string &name) -> std::unique_ptr<WindowClass>
+    std::unique_ptr<WindowClass> CreateNativeWindowClass(HINSTANCE instance, const std::string &name)
     {
         auto wname = ToUtf16(name);
         auto settings = WNDCLASSW();
@@ -192,7 +192,7 @@ namespace Eternal
         return std::make_unique<NativeWindowClass>(instance, className);
     }
 
-    auto CreateNativeWindowClass(const std::string &name) -> std::unique_ptr<WindowClass>
+    std::unique_ptr<WindowClass> CreateNativeWindowClass(const std::string &name)
     {
         auto *instance = GetModuleHandleW(nullptr);
         return CreateNativeWindowClass(instance, name);

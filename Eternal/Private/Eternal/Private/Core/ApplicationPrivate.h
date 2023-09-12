@@ -17,8 +17,8 @@ namespace Eternal
     public:
         explicit ApplicationPrivate(std::unique_ptr<EnginePrivate> engine, std::unique_ptr<Engine> interface);
 
-        virtual Engine &GetEngine() const override;
-        virtual void AddPlugin(std::unique_ptr<Plugin> plugin) override;
-        virtual void Run() override;
+        Engine &GetEngine() const override;
+        void AddPlugin(std::unique_ptr<Plugin> plugin) override;
+        void Run() override;
     };
 }

@@ -2,7 +2,7 @@
 
 #include <Eternal/Math/Products.h>
 
-auto main() -> int
+int main()
 {
     using namespace Eternal;
 

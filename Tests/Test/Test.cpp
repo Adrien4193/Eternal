@@ -9,12 +9,12 @@ AssertionFailed::AssertionFailed(std::source_location source):
 {
 }
 
-auto AssertionFailed::GetSource() const -> const std::source_location &
+const std::source_location &AssertionFailed::GetSource() const
 {
     return m_Source;
 }
 
-auto FormatFailureInfo(const FailureInfo &info) -> std::string
+std::string FormatFailureInfo(const FailureInfo &info)
 {
     const auto &testCase = info.TestCase;
     const auto &test = info.Test;
@@ -24,7 +24,7 @@ auto FormatFailureInfo(const FailureInfo &info) -> std::string
     return std::format("Test case '{}.{}' failed at {}:{}.", testCase, test, file, line);
 }
 
-void ConsoleHandler::Handle(const FailureInfo &info)
+void ConsoleFailureHandler::Handle(const FailureInfo &info)
 {
     auto message = FormatFailureInfo(info);
     std::cout << message << '\n';
@@ -36,7 +36,7 @@ TestCase::TestCase(std::string name, std::unique_ptr<FailureHandler> handler):
 {
 }
 
-auto TestCase::Run() -> int
+int TestCase::Run()
 {
     for (const auto &[name, test] : m_Tests)
     {
@@ -57,7 +57,7 @@ auto TestCase::Run() -> int
     return 0;
 }
 
-auto TestCase::operator[](std::string name) -> std::function<void()> &
+std::function<void()> &TestCase::operator[](std::string name)
 {
     auto i = m_Tests.find(name);
     if (i != m_Tests.end())
@@ -69,9 +69,9 @@ auto TestCase::operator[](std::string name) -> std::function<void()> &
     return j->second;
 }
 
-auto CreateTestCase(std::string name) -> TestCase
+TestCase CreateTestCase(std::string name)
 {
-    return TestCase(std::move(name), std::make_unique<ConsoleHandler>());
+    return TestCase(std::move(name), std::make_unique<ConsoleFailureHandler>());
 }
 
 void Assert(bool value, std::source_location source)

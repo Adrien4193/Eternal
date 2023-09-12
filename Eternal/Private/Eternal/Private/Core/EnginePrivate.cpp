@@ -9,7 +9,7 @@ namespace Eternal
     {
     }
 
-    auto EnginePrivate::IsRunning() const -> bool
+    bool EnginePrivate::IsRunning() const
     {
         return m_EventLoop->IsRunning();
     }
@@ -47,17 +47,17 @@ namespace Eternal
     {
     }
 
-    auto EngineAdapter::GetEventLoop() const -> EventLoop &
+    EventLoop &EngineAdapter::GetEventLoop() const
     {
         return *m_EventLoop;
     }
 
-    auto EngineAdapter::GetLogger() const -> Logger &
+    Logger &EngineAdapter::GetLogger() const
     {
         return m_Logger;
     }
 
-    auto EngineAdapter::GetWindow() const -> Window &
+    Window &EngineAdapter::GetWindow() const
     {
         return *m_Window;
     }

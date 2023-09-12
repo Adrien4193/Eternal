@@ -32,35 +32,35 @@ namespace Eternal
         {
         }
 
-        constexpr auto GetData() const -> const T *
+        constexpr const T *GetData() const
         {
-            return m_Components;
+            return static_cast<const T *>(m_Components);
         }
 
-        constexpr auto GetData() -> T *
+        constexpr T *GetData()
         {
-            return m_Components;
+            return static_cast<T *>(m_Components);
         }
 
-        constexpr auto operator[](std::size_t index) const -> const T &
-        {
-            assert(index < ComponentCount);
-            return m_Components[index];
-        }
-
-        constexpr auto operator[](std::size_t index) -> T &
+        constexpr const T &operator[](std::size_t index) const
         {
             assert(index < ComponentCount);
             return m_Components[index];
         }
 
-        constexpr auto operator()(std::size_t row, std::size_t column) const -> const T &
+        constexpr T &operator[](std::size_t index)
+        {
+            assert(index < ComponentCount);
+            return m_Components[index];
+        }
+
+        constexpr const T &operator()(std::size_t row, std::size_t column) const
         {
             assert(row < RowCount && column < ColumnCount);
             return m_Components[row * RowSize + column];
         }
 
-        constexpr auto operator()(std::size_t row, std::size_t column) -> T &
+        constexpr T &operator()(std::size_t row, std::size_t column)
         {
             assert(row < RowCount && column < ColumnCount);
             return m_Components[row * RowSize + column];
@@ -70,31 +70,31 @@ namespace Eternal
     };
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto begin(const Eternal::Matrix<T, M, N> &value) -> const T *
+    constexpr const T *begin(const Eternal::Matrix<T, M, N> &value)
     {
         return value.GetData();
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto begin(Eternal::Matrix<T, M, N> &value) -> T *
+    constexpr T *begin(Eternal::Matrix<T, M, N> &value)
     {
         return value.GetData();
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto end(const Eternal::Matrix<T, M, N> &value) -> const T *
+    constexpr const T *end(const Eternal::Matrix<T, M, N> &value)
     {
         return value.GetData() + value.ComponentCount;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto end(Eternal::Matrix<T, M, N> &value) -> T *
+    constexpr T *end(Eternal::Matrix<T, M, N> &value)
     {
         return value.GetData() + value.ComponentCount;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator-(Matrix<T, M, N> value) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator-(Matrix<T, M, N> value)
     {
         for (auto i = std::size_t(0); i < value.ComponentCount; ++i)
         {
@@ -104,7 +104,7 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator+(Matrix<T, M, N> value) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator+(Matrix<T, M, N> value)
     {
         for (auto i = std::size_t(0); i < value.ComponentCount; ++i)
         {
@@ -114,7 +114,7 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator+=(Matrix<T, M, N> &left, const Matrix<T, M, N> &right) -> Matrix<T, M, N> &
+    constexpr Matrix<T, M, N> &operator+=(Matrix<T, M, N> &left, const Matrix<T, M, N> &right)
     {
         for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
         {
@@ -124,13 +124,13 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator+(Matrix<T, M, N> left, const Matrix<T, M, N> &right) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator+(Matrix<T, M, N> left, const Matrix<T, M, N> &right)
     {
         return left += right;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator-=(Matrix<T, M, N> &left, const Matrix<T, M, N> &right) -> Matrix<T, M, N> &
+    constexpr Matrix<T, M, N> &operator-=(Matrix<T, M, N> &left, const Matrix<T, M, N> &right)
     {
         for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
         {
@@ -140,13 +140,13 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator-(Matrix<T, M, N> left, const Matrix<T, M, N> &right) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator-(Matrix<T, M, N> left, const Matrix<T, M, N> &right)
     {
         return left -= right;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator*=(Matrix<T, M, N> &left, const Matrix<T, M, N> &right) -> Matrix<T, M, N> &
+    constexpr Matrix<T, M, N> &operator*=(Matrix<T, M, N> &left, const Matrix<T, M, N> &right)
     {
         for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
         {
@@ -156,7 +156,7 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator*=(Matrix<T, M, N> &left, T right) -> Matrix<T, M, N> &
+    constexpr Matrix<T, M, N> &operator*=(Matrix<T, M, N> &left, T right)
     {
         for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
         {
@@ -166,25 +166,25 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator*(Matrix<T, M, N> left, const Matrix<T, M, N> &right) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator*(Matrix<T, M, N> left, const Matrix<T, M, N> &right)
     {
         return left *= right;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator*(Matrix<T, M, N> left, T right) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator*(Matrix<T, M, N> left, T right)
     {
         return left *= right;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator*(T left, Matrix<T, M, N> right) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator*(T left, Matrix<T, M, N> right)
     {
         return right *= left;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator/=(Matrix<T, M, N> &left, const Matrix<T, M, N> &right) -> Matrix<T, M, N> &
+    constexpr Matrix<T, M, N> &operator/=(Matrix<T, M, N> &left, const Matrix<T, M, N> &right)
     {
         for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
         {
@@ -194,7 +194,7 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator/=(Matrix<T, M, N> &left, T right) -> Matrix<T, M, N> &
+    constexpr Matrix<T, M, N> &operator/=(Matrix<T, M, N> &left, T right)
     {
         for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
         {
@@ -204,19 +204,19 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator/(Matrix<T, M, N> left, const Matrix<T, M, N> &right) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator/(Matrix<T, M, N> left, const Matrix<T, M, N> &right)
     {
         return left /= right;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator/(Matrix<T, M, N> left, T right) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator/(Matrix<T, M, N> left, T right)
     {
         return left /= right;
     }
 
     template<typename T, std::size_t M, std::size_t N>
-    constexpr auto operator/(T left, Matrix<T, M, N> right) -> Matrix<T, M, N>
+    constexpr Matrix<T, M, N> operator/(T left, Matrix<T, M, N> right)
     {
         for (auto i = std::size_t(0); i < right.ComponentCount; ++i)
         {

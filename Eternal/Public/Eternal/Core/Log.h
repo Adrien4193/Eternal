@@ -40,7 +40,7 @@ namespace Eternal
     class ConsoleLogHandler : public LogHandler
     {
     public:
-        virtual void Handle(const LogRecord &record) override;
+        void Handle(const LogRecord &record) override;
     };
 
     class Logger

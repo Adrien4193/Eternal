@@ -25,6 +25,6 @@ namespace Eternal
     public:
         explicit EventLoopAdapter(EventLoopPrivate &eventLoop);
 
-        virtual void Stop() override;
+        void Stop() override;
     };
 }

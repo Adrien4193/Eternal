@@ -39,8 +39,8 @@ namespace Eternal
     public:
         explicit EngineAdapter(std::unique_ptr<EventLoop> eventLoop, Logger &logger, std::unique_ptr<Window> window);
 
-        virtual EventLoop &GetEventLoop() const override;
-        virtual Logger &GetLogger() const override;
-        virtual Window &GetWindow() const override;
+        EventLoop &GetEventLoop() const override;
+        Logger &GetLogger() const override;
+        Window &GetWindow() const override;
     };
 }

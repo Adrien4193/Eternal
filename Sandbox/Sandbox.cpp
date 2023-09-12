@@ -17,7 +17,7 @@ public:
     }
 };
 
-auto main() -> int
+int main()
 {
     auto application = Eternal::CreateApplication("Sandbox");
     auto &engine = application->GetEngine();

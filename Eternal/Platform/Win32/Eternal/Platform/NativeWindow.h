@@ -16,10 +16,10 @@ namespace Eternal
 
     public:
         explicit NativeWindowHandle(HWND handle, std::unique_ptr<WindowListener> listener);
-        virtual ~NativeWindowHandle();
+        ~NativeWindowHandle() override;
 
-        virtual void *AsRawPtr() const override;
-        virtual void Poll() override;
+        void *AsRawPtr() const override;
+        void Poll() override;
     };
 
     class NativeWindowClass : public WindowClass
@@ -30,9 +30,9 @@ namespace Eternal
 
     public:
         explicit NativeWindowClass(HINSTANCE instance, LPCWSTR className);
-        virtual ~NativeWindowClass();
+        ~NativeWindowClass() override;
 
-        virtual std::unique_ptr<WindowHandle> Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener) override;
+        std::unique_ptr<WindowHandle> Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener) override;
     };
 
     std::unique_ptr<WindowClass> CreateNativeWindowClass(HINSTANCE instance, const std::string &name);

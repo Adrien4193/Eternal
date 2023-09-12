@@ -26,9 +26,9 @@ namespace Eternal
     public:
         explicit WindowPropertyListener(WindowProperties &properties);
 
-        virtual void OnSetTitle(const std::string &title) override;
-        virtual void OnResize(const WindowSize &size) override;
-        virtual void OnClose() override;
+        void OnSetTitle(const std::string &title) override;
+        void OnResize(const WindowSize &size) override;
+        void OnClose() override;
     };
 
     class WindowPrivate
@@ -58,8 +58,8 @@ namespace Eternal
     public:
         explicit WindowAdapter(WindowPrivate &window);
 
-        virtual void *GetNativeHandle() const override;
-        virtual const std::string &GetTitle() const override;
-        virtual const WindowSize &GetSize() const override;
+        void *GetNativeHandle() const override;
+        const std::string &GetTitle() const override;
+        const WindowSize &GetSize() const override;
     };
 }

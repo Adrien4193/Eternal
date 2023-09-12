@@ -20,7 +20,7 @@ public:
     }
 };
 
-auto main() -> int
+int main()
 {
     auto test = CreateTestCase("Log");
 

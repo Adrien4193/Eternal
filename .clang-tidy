@@ -12,13 +12,16 @@ Checks: -*
   -cppcoreguidelines-avoid-c-arrays
   -cppcoreguidelines-avoid-const-or-ref-data-members
   -cppcoreguidelines-avoid-magic-numbers
-  -cppcoreguidelines-pro-type-reinterpret-cast
+  -cppcoreguidelines-pro-*
+  -cppcoreguidelines-special-member-functions
   -modernize-avoid-c-arrays
+  -modernize-use-nodiscard
+  -modernize-use-trailing-return-type
   -performance-no-int-to-ptr
   -readability-identifier-length
   -readability-magic-numbers
 
-HeaderFilterRegex: ""
+HeaderFilterRegex: ".*"
 
 CheckOptions:
   - key: readability-identifier-naming.ClassCase

@@ -35,10 +35,10 @@ public:
     virtual void Handle(const FailureInfo &info) = 0;
 };
 
-class ConsoleHandler : public FailureHandler
+class ConsoleFailureHandler : public FailureHandler
 {
 public:
-    virtual void Handle(const FailureInfo &info) override;
+    void Handle(const FailureInfo &info) override;
 };
 
 class TestCase
