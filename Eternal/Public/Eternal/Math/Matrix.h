@@ -23,7 +23,7 @@ namespace Eternal
         T m_Components[ComponentCount];
 
     public:
-        explicit constexpr Matrix() = default;
+        constexpr Matrix() = default;
 
         template<typename... Args>
         requires(sizeof...(Args) == ComponentCount && (std::is_same_v<Args, T> && ...))

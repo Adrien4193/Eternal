@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <Eternal/Core/Log.h>
 
 #include "EventLoop.h"
@@ -9,11 +11,16 @@ namespace Eternal
 {
     class Engine
     {
-    public:
-        virtual ~Engine() = default;
+    private:
+        EventLoop &m_EventLoop;
+        Logger &m_Logger;
+        Window &m_Window;
 
-        virtual EventLoop &GetEventLoop() const = 0;
-        virtual Logger &GetLogger() const = 0;
-        virtual Window &GetWindow() const = 0;
+    public:
+        explicit Engine(EventLoop &eventLoop, Logger &logger, Window &window);
+
+        EventLoop &GetEventLoop() const;
+        Logger &GetLogger() const;
+        Window &GetWindow() const;
     };
 }

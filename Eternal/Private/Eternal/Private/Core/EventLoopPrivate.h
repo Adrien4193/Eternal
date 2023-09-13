@@ -9,22 +9,12 @@ namespace Eternal
     class EventLoopPrivate
     {
     private:
-        bool m_Running = false;
+        std::unique_ptr<EventLoopProperties> m_Properties;
 
     public:
+        explicit EventLoopPrivate(std::unique_ptr<EventLoopProperties> properties);
+
         bool IsRunning() const;
         void Start();
-        void Stop();
-    };
-
-    class EventLoopAdapter : public EventLoop
-    {
-    private:
-        EventLoopPrivate &m_EventLoop;
-
-    public:
-        explicit EventLoopAdapter(EventLoopPrivate &eventLoop);
-
-        void Stop() override;
     };
 }

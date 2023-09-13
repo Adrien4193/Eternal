@@ -82,19 +82,19 @@ namespace
         return SetListener(window, l);
     }
 
-    void OnSetTitle(WindowListener &listener, LPARAM l)
+    void SetTitle(WindowListener &listener, LPARAM l)
     {
         const auto *wtitle = reinterpret_cast<LPCWSTR>(l);
         auto title = ToUtf8(wtitle);
-        listener.OnSetTitle(title);
+        listener.SetTitle(title);
     }
 
-    void OnResize(WindowListener &listener, LPARAM l)
+    void Resize(WindowListener &listener, LPARAM l)
     {
-        auto width = LOWORD(l);
-        auto height = HIWORD(l);
-        auto size = WindowSize(static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height));
-        listener.OnResize(size);
+        auto width = static_cast<float>(LOWORD(l));
+        auto height = static_cast<float>(HIWORD(l));
+        auto size = Vector2(width, height);
+        listener.Resize(size);
     }
 
     LRESULT CALLBACK ProcessMessage(HWND window, UINT message, WPARAM w, LPARAM l)
@@ -103,13 +103,13 @@ namespace
         switch (message)
         {
         case WM_SETTEXT:
-            OnSetTitle(listener, l);
+            SetTitle(listener, l);
             return 0;
         case WM_SIZE:
-            OnResize(listener, l);
+            Resize(listener, l);
             return 0;
         case WM_CLOSE:
-            listener.OnClose();
+            listener.Close();
             return 0;
         default:
             return DefWindowProcW(window, message, w, l);
@@ -163,8 +163,8 @@ namespace Eternal
         auto style = WS_OVERLAPPEDWINDOW;
         auto x = CW_USEDEFAULT;
         auto y = CW_USEDEFAULT;
-        auto width = static_cast<int>(settings.Size.Width);
-        auto height = static_cast<int>(settings.Size.Height);
+        auto width = static_cast<int>(settings.Size[0]);
+        auto height = static_cast<int>(settings.Size[1]);
         auto *parent = HWND(nullptr);
         auto *menu = HMENU(nullptr);
         auto *window = CreateWindowExW(options, m_ClassName, title.c_str(), style, x, y, width, height, parent, menu, m_Instance, listener.get());

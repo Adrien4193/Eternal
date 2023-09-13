@@ -2,11 +2,19 @@
 
 namespace Eternal
 {
+    struct EventLoopProperties
+    {
+        bool Running = false;
+    };
+
     class EventLoop
     {
-    public:
-        virtual ~EventLoop() = default;
+    private:
+        EventLoopProperties &m_Properties;
 
-        virtual void Stop() = 0;
+    public:
+        explicit EventLoop(EventLoopProperties &properties);
+
+        void Stop();
     };
 }

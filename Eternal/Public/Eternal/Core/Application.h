@@ -7,13 +7,20 @@
 
 namespace Eternal
 {
+    class EnginePrivate;
+
     class Application
     {
-    public:
-        virtual ~Application() = default;
+    private:
+        std::unique_ptr<Engine> m_Engine;
+        std::unique_ptr<EnginePrivate> m_EnginePrivate;
 
-        virtual Engine &GetEngine() const = 0;
-        virtual void AddPlugin(std::unique_ptr<Plugin> plugin) = 0;
-        virtual void Run() = 0;
+    public:
+        explicit Application(std::unique_ptr<Engine> engine, std::unique_ptr<EnginePrivate> enginePrivate);
+        ~Application();
+
+        Engine &GetEngine() const;
+        void AddPlugin(std::unique_ptr<Plugin> plugin);
+        void Run();
     };
 }

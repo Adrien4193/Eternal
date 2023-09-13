@@ -2,28 +2,18 @@
 
 namespace Eternal
 {
+    EventLoopPrivate::EventLoopPrivate(std::unique_ptr<EventLoopProperties> properties):
+        m_Properties(std::move(properties))
+    {
+    }
+
     bool EventLoopPrivate::IsRunning() const
     {
-        return m_Running;
+        return m_Properties->Running;
     }
 
     void EventLoopPrivate::Start()
     {
-        m_Running = true;
-    }
-
-    void EventLoopPrivate::Stop()
-    {
-        m_Running = false;
-    }
-
-    EventLoopAdapter::EventLoopAdapter(EventLoopPrivate &eventLoop):
-        m_EventLoop(eventLoop)
-    {
-    }
-
-    void EventLoopAdapter::Stop()
-    {
-        m_EventLoop.Stop();
+        m_Properties->Running = true;
     }
 }

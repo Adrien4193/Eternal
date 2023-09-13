@@ -4,7 +4,7 @@
 
 #include <Windows.h>
 
-#include <Eternal/Private/Core/WindowCommon.h>
+#include <Eternal/Core/Window.h>
 
 namespace Eternal
 {
