@@ -1,12 +1,12 @@
 #include "Application.h"
 
-#include <Eternal/Private/Core/EnginePrivate.h>
+#include <Eternal/Private/Core/EngineManager.h>
 
 namespace Eternal
 {
-    Application::Application(std::unique_ptr<Engine> engine, std::unique_ptr<EnginePrivate> enginePrivate):
+    Application::Application(std::unique_ptr<Engine> engine, std::unique_ptr<EngineManager> enginePrivate):
         m_Engine(std::move(engine)),
-        m_EnginePrivate(std::move(enginePrivate))
+        m_EngineManager(std::move(enginePrivate))
     {
     }
 
@@ -21,11 +21,11 @@ namespace Eternal
 
     void Application::AddPlugin(std::unique_ptr<Plugin> plugin)
     {
-        m_EnginePrivate->AddPlugin(std::move(plugin));
+        m_EngineManager->AddPlugin(std::move(plugin));
     }
 
     void Application::Run()
     {
-        m_EnginePrivate->Run();
+        m_EngineManager->Run();
     }
 }

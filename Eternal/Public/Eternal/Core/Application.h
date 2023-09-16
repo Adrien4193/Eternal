@@ -7,16 +7,16 @@
 
 namespace Eternal
 {
-    class EnginePrivate;
+    class EngineManager;
 
     class Application
     {
     private:
         std::unique_ptr<Engine> m_Engine;
-        std::unique_ptr<EnginePrivate> m_EnginePrivate;
+        std::unique_ptr<EngineManager> m_EngineManager;
 
     public:
-        explicit Application(std::unique_ptr<Engine> engine, std::unique_ptr<EnginePrivate> enginePrivate);
+        explicit Application(std::unique_ptr<Engine> engine, std::unique_ptr<EngineManager> enginePrivate);
         ~Application();
 
         Engine &GetEngine() const;

@@ -29,37 +29,6 @@ namespace Eternal
         virtual void Poll() = 0;
     };
 
-    class WindowListener
-    {
-    public:
-        virtual ~WindowListener() = default;
-
-        virtual void SetTitle(const std::string &title) = 0;
-        virtual void Resize(const Vector2 &size) = 0;
-        virtual void Close() = 0;
-    };
-
-    class WindowPropertyListener : public WindowListener
-    {
-    private:
-        WindowProperties &m_Properties;
-
-    public:
-        explicit WindowPropertyListener(WindowProperties &properties);
-
-        void SetTitle(const std::string &title) override;
-        void Resize(const Vector2 &size) override;
-        void Close() override;
-    };
-
-    class WindowClass
-    {
-    public:
-        virtual ~WindowClass() = default;
-
-        virtual std::unique_ptr<WindowHandle> Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener) = 0;
-    };
-
     class Window
     {
     private:
