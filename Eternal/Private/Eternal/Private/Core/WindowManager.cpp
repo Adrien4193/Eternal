@@ -13,6 +13,15 @@ namespace
         properties->Size = settings.Size;
         return properties;
     }
+
+    WindowHolder CreateWindowHolder(WindowClass &cls, const WindowSettings &settings)
+    {
+        auto properties = CreateWindowProperties(settings);
+        auto listener = std::make_unique<WindowPropertyListener>(*properties);
+        auto handle = cls.Instanciate(settings, std::move(listener));
+        auto window = std::make_unique<Window>(*handle, *properties);
+        return {std::move(properties), std::move(handle), std::move(window)};
+    }
 }
 
 namespace Eternal
@@ -61,11 +70,7 @@ namespace Eternal
     std::unique_ptr<WindowManager> CreateWindowManager(const WindowSettings &settings)
     {
         auto cls = CreateNativeWindowClass("Eternal");
-        auto properties = CreateWindowProperties(settings);
-        auto listener = std::make_unique<WindowPropertyListener>(*properties);
-        auto handle = cls->Instanciate(settings, std::move(listener));
-        auto window = std::make_unique<Window>(*handle, *properties);
-        auto holder = WindowHolder{std::move(properties), std::move(handle), std::move(window)};
+        auto holder = CreateWindowHolder(*cls, settings);
         return std::make_unique<WindowManager>(std::move(cls), std::move(holder));
     }
 }
