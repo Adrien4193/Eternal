@@ -2,18 +2,24 @@
 
 namespace Eternal
 {
-    struct EventLoopProperties
+    class ApplicationLoop
     {
-        bool Running = false;
+    private:
+        bool m_Running = false;
+
+    public:
+        bool IsRunning() const;
+        void Start();
+        void Stop();
     };
 
     class EventLoop
     {
     private:
-        EventLoopProperties &m_Properties;
+        ApplicationLoop &m_Loop;
 
     public:
-        explicit EventLoop(EventLoopProperties &properties);
+        explicit EventLoop(ApplicationLoop &loop);
 
         void Stop();
     };

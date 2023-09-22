@@ -1,26 +1,36 @@
 #include "Factory.h"
 
-#include <Eternal/Private/Core/EngineManager.h>
-#include <Eternal/Private/Core/EventLoopManager.h>
-#include <Eternal/Private/Core/WindowManager.h>
+#include <Eternal/Platform/NativeWindow.h>
+
+#include <Eternal/Private/Core/CorePlugin.h>
 
 namespace Eternal
 {
     std::unique_ptr<Application> CreateApplication(const std::string &name)
     {
-        auto eventLoopManager = CreateEventLoopManager();
+        auto applicationLoop = std::make_unique<ApplicationLoop>();
+        auto eventLoop = std::make_unique<EventLoop>(*applicationLoop);
 
         auto logger = CreateConsoleLogger(name);
 
-        auto windowSettings = WindowSettings();
-        windowSettings.Title = name;
-        windowSettings.Size = {400.0f, 400.0f};
-        auto windowManager = CreateWindowManager(windowSettings);
+        auto windowClass = CreateNativeWindowClass("Eternal");
+        auto windows = std::make_unique<WindowRegistry>(std::move(windowClass));
+        auto windowManager = std::make_unique<WindowManager>(*windows);
 
-        auto engine = std::make_unique<Engine>(eventLoopManager->GetEventLoop(), *logger, windowManager->GetWindow());
+        auto core = std::make_unique<CorePlugin>(*logger, *windows);
 
-        auto engineManager = std::make_unique<EngineManager>(std::move(eventLoopManager), std::move(logger), std::move(windowManager));
+        auto engineProperties = std::make_unique<EngineProperties>();
+        engineProperties->EventLoop = std::move(eventLoop);
+        engineProperties->Logger = std::move(logger);
+        engineProperties->Windows = std::move(windows);
+        engineProperties->WindowManager = std::move(windowManager);
 
-        return std::make_unique<Application>(std::move(engine), std::move(engineManager));
+        auto engine = std::make_unique<Engine>(std::move(engineProperties));
+
+        auto application = std::make_unique<Application>(std::move(applicationLoop), std::move(engine));
+
+        application->AddPlugin(std::move(core));
+
+        return application;
     }
 }

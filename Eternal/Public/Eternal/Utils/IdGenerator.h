@@ -9,23 +9,23 @@ namespace Eternal
     {
     private:
         T m_Counter = 0;
-        std::vector<T> m_AvailableIds;
+        std::vector<T> m_RecycledIds;
 
     public:
         T Next()
         {
-            if (m_AvailableIds.empty())
+            if (m_RecycledIds.empty())
             {
                 return m_Counter++;
             }
-            auto id = m_AvailableIds.back();
-            m_AvailableIds.pop_back();
+            auto id = m_RecycledIds.back();
+            m_RecycledIds.pop_back();
             return id;
         }
 
         void Recycle(T id)
         {
-            m_AvailableIds.push_back(id);
+            m_RecycledIds.push_back(id);
         }
     };
 }

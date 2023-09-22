@@ -2,13 +2,28 @@
 
 namespace Eternal
 {
-    EventLoop::EventLoop(EventLoopProperties &properties):
-        m_Properties(properties)
+    bool ApplicationLoop::IsRunning() const
+    {
+        return m_Running;
+    }
+
+    void ApplicationLoop::Start()
+    {
+        m_Running = true;
+    }
+
+    void ApplicationLoop::Stop()
+    {
+        m_Running = false;
+    }
+
+    EventLoop::EventLoop(ApplicationLoop &loop):
+        m_Loop(loop)
     {
     }
 
     void EventLoop::Stop()
     {
-        m_Properties.Running = false;
+        m_Loop.Stop();
     }
 }

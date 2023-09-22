@@ -9,18 +9,24 @@
 
 namespace Eternal
 {
+    struct EngineProperties
+    {
+        std::unique_ptr<EventLoop> EventLoop;
+        std::unique_ptr<Logger> Logger;
+        std::unique_ptr<WindowRegistry> Windows;
+        std::unique_ptr<WindowManager> WindowManager;
+    };
+
     class Engine
     {
     private:
-        EventLoop &m_EventLoop;
-        Logger &m_Logger;
-        Window &m_Window;
+        std::unique_ptr<EngineProperties> m_Properties;
 
     public:
-        explicit Engine(EventLoop &eventLoop, Logger &logger, Window &window);
+        explicit Engine(std::unique_ptr<EngineProperties> properties);
 
         EventLoop &GetEventLoop() const;
         Logger &GetLogger() const;
-        Window &GetWindow() const;
+        WindowManager &GetWindowManager() const;
     };
 }

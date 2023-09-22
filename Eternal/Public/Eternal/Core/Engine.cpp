@@ -2,25 +2,23 @@
 
 namespace Eternal
 {
-    Engine::Engine(EventLoop &eventLoop, Logger &logger, Window &window):
-        m_EventLoop(eventLoop),
-        m_Logger(logger),
-        m_Window(window)
+    Engine::Engine(std::unique_ptr<EngineProperties> properties):
+        m_Properties(std::move(properties))
     {
     }
 
     EventLoop &Engine::GetEventLoop() const
     {
-        return m_EventLoop;
+        return *m_Properties->EventLoop;
     }
 
     Logger &Engine::GetLogger() const
     {
-        return m_Logger;
+        return *m_Properties->Logger;
     }
 
-    Window &Engine::GetWindow() const
+    WindowManager &Engine::GetWindowManager() const
     {
-        return m_Window;
+        return *m_Properties->WindowManager;
     }
 }

@@ -6,8 +6,6 @@
 
 #include <Eternal/Core/Window.h>
 
-#include <Eternal/Private/Core/WindowClass.h>
-
 namespace Eternal
 {
     class NativeWindowHandle : public WindowHandle
