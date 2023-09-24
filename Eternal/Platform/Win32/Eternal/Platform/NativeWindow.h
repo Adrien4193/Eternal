@@ -2,9 +2,11 @@
 
 #include <memory>
 
-#include <Windows.h>
-
 #include <Eternal/Core/Window.h>
+
+using HINSTANCE = struct HINSTANCE__ *;
+using LPCWSTR = const wchar_t *;
+using HWND = struct HWND__ *;
 
 namespace Eternal
 {

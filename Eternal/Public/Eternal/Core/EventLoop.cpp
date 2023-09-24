@@ -2,28 +2,28 @@
 
 namespace Eternal
 {
+    ApplicationLoop::ApplicationLoop(std::unique_ptr<EventLoopProperties> properties):
+        m_Properties(std::move(properties))
+    {
+    }
+
     bool ApplicationLoop::IsRunning() const
     {
-        return m_Running;
+        return m_Properties->Running;
     }
 
     void ApplicationLoop::Start()
     {
-        m_Running = true;
+        m_Properties->Running = true;
     }
 
-    void ApplicationLoop::Stop()
-    {
-        m_Running = false;
-    }
-
-    EventLoop::EventLoop(ApplicationLoop &loop):
-        m_Loop(loop)
+    EventLoop::EventLoop(EventLoopProperties &properties):
+        m_Properties(properties)
     {
     }
 
     void EventLoop::Stop()
     {
-        m_Loop.Stop();
+        m_Properties.Running = false;
     }
 }

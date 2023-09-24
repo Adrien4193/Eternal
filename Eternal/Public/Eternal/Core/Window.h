@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -73,11 +74,18 @@ namespace Eternal
         }
     };
 
-    struct WindowHolder
+    class WindowHolder
     {
-        std::unique_ptr<WindowProperties> Properties;
-        std::unique_ptr<WindowHandle> Handle;
-        std::unique_ptr<Window> Interface;
+    private:
+        std::unique_ptr<WindowProperties> m_Properties;
+        std::unique_ptr<WindowHandle> m_Handle;
+        std::unique_ptr<Window> m_Interface;
+
+    public:
+        explicit WindowHolder(std::unique_ptr<WindowProperties> properties, std::unique_ptr<WindowHandle> handle, std::unique_ptr<Window> interface);
+
+        Window &GetInterface() const;
+        void Poll();
     };
 
     class WindowRegistry
@@ -92,7 +100,25 @@ namespace Eternal
 
         WindowHolder &Add(const WindowSettings &settings);
         void Remove(std::size_t id);
-        void Update();
+
+        void ForEach(std::invocable<WindowHolder &> auto &&callable)
+        {
+            for (auto &[id, window] : m_Windows)
+            {
+                callable(window);
+            }
+        }
+    };
+
+    class WindowUpdater
+    {
+    private:
+        std::unique_ptr<WindowRegistry> m_Windows;
+
+    public:
+        explicit WindowUpdater(std::unique_ptr<WindowRegistry> windows);
+
+        void PollWindows();
     };
 
     class WindowManager

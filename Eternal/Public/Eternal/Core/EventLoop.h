@@ -1,25 +1,33 @@
 #pragma once
 
+#include <memory>
+
 namespace Eternal
 {
+    struct EventLoopProperties
+    {
+        bool Running = false;
+    };
+
     class ApplicationLoop
     {
     private:
-        bool m_Running = false;
+        std::unique_ptr<EventLoopProperties> m_Properties;
 
     public:
+        explicit ApplicationLoop(std::unique_ptr<EventLoopProperties> properties);
+
         bool IsRunning() const;
         void Start();
-        void Stop();
     };
 
     class EventLoop
     {
     private:
-        ApplicationLoop &m_Loop;
+        EventLoopProperties &m_Properties;
 
     public:
-        explicit EventLoop(ApplicationLoop &loop);
+        explicit EventLoop(EventLoopProperties &properties);
 
         void Stop();
     };

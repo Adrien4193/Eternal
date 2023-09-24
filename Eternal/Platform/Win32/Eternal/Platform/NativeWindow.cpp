@@ -3,6 +3,8 @@
 #include <format>
 #include <stdexcept>
 
+#include <Windows.h>
+
 namespace
 {
     using namespace Eternal;

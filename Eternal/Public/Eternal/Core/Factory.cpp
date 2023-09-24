@@ -8,21 +8,22 @@ namespace Eternal
 {
     std::unique_ptr<Application> CreateApplication(const std::string &name)
     {
-        auto applicationLoop = std::make_unique<ApplicationLoop>();
-        auto eventLoop = std::make_unique<EventLoop>(*applicationLoop);
+        auto eventLoopProperties = std::make_unique<EventLoopProperties>();
+        auto eventLoop = std::make_unique<EventLoop>(*eventLoopProperties);
+        auto applicationLoop = std::make_unique<ApplicationLoop>(std::move(eventLoopProperties));
 
         auto logger = CreateConsoleLogger(name);
 
         auto windowClass = CreateNativeWindowClass("Eternal");
         auto windows = std::make_unique<WindowRegistry>(std::move(windowClass));
         auto windowManager = std::make_unique<WindowManager>(*windows);
+        auto windowUpdater = std::make_unique<WindowUpdater>(std::move(windows));
 
-        auto core = std::make_unique<CorePlugin>(*logger, *windows);
+        auto core = std::make_unique<CorePlugin>(*logger, std::move(windowUpdater));
 
         auto engineProperties = std::make_unique<EngineProperties>();
         engineProperties->EventLoop = std::move(eventLoop);
         engineProperties->Logger = std::move(logger);
-        engineProperties->Windows = std::move(windows);
         engineProperties->WindowManager = std::move(windowManager);
 
         auto engine = std::make_unique<Engine>(std::move(engineProperties));

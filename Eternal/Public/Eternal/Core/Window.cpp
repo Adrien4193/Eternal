@@ -77,6 +77,24 @@ namespace Eternal
         return m_Handle.AsRawPtr();
     }
 
+    WindowHolder::WindowHolder(std::unique_ptr<WindowProperties> properties, std::unique_ptr<WindowHandle> handle, std::unique_ptr<Window> interface):
+        m_Properties(std::move(properties)),
+        m_Handle(std::move(handle)),
+        m_Interface(std::move(interface))
+    {
+    }
+
+    Window &WindowHolder::GetInterface() const
+    {
+        return *m_Interface;
+    }
+
+    void WindowHolder::Poll()
+    {
+        m_Properties->Closed = false;
+        m_Handle->Poll();
+    }
+
     WindowRegistry::WindowRegistry(std::unique_ptr<WindowClass> windowClass):
         m_WindowClass(std::move(windowClass))
     {
@@ -89,7 +107,7 @@ namespace Eternal
         auto handle = m_WindowClass->Instanciate(settings, std::move(listener));
         auto id = m_IdGenerator.Next();
         auto interface = std::make_unique<Window>(id, *properties, *handle);
-        auto holder = WindowHolder{std::move(properties), std::move(handle), std::move(interface)};
+        auto holder = WindowHolder(std::move(properties), std::move(handle), std::move(interface));
         auto [i, inserted] = m_Windows.emplace(id, std::move(holder));
         assert(inserted);
         return i->second;
@@ -106,13 +124,14 @@ namespace Eternal
         m_IdGenerator.Recycle(id);
     }
 
-    void WindowRegistry::Update()
+    WindowUpdater::WindowUpdater(std::unique_ptr<WindowRegistry> windows):
+        m_Windows(std::move(windows))
     {
-        for (const auto &[id, window] : m_Windows)
-        {
-            window.Properties->Closed = false;
-            window.Handle->Poll();
-        }
+    }
+
+    void WindowUpdater::PollWindows()
+    {
+        m_Windows->ForEach([](auto &window) { window.Poll(); });
     }
 
     WindowManager::WindowManager(WindowRegistry &windows):
@@ -123,7 +142,7 @@ namespace Eternal
     Window &WindowManager::AddWindow(const WindowSettings &settings)
     {
         auto &window = m_Windows.Add(settings);
-        return *window.Interface;
+        return window.GetInterface();
     }
 
     void WindowManager::RemoveWindow(std::size_t id)
