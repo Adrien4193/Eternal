@@ -2,9 +2,9 @@
 
 namespace Eternal
 {
-    CorePlugin::CorePlugin(Logger &logger, std::unique_ptr<WindowUpdater> windowUpdater):
+    CorePlugin::CorePlugin(Logger &logger, WindowUpdater &windowUpdater):
         m_Logger(logger),
-        m_WindowUpdater(std::move(windowUpdater))
+        m_WindowUpdater(windowUpdater)
     {
     }
 
@@ -21,7 +21,7 @@ namespace Eternal
     void CorePlugin::Update()
     {
         m_Logger.Trace("Updating engine.");
-        m_WindowUpdater->PollWindows();
+        m_WindowUpdater.PollWindows();
         m_Logger.Trace("Engine updated.");
     }
 }

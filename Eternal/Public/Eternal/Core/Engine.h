@@ -13,6 +13,7 @@ namespace Eternal
     {
         std::unique_ptr<EventLoop> EventLoop;
         std::unique_ptr<Logger> Logger;
+        std::unique_ptr<WindowUpdater> WindowUpdater;
         std::unique_ptr<WindowManager> WindowManager;
     };
 

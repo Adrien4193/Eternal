@@ -10,10 +10,10 @@ namespace Eternal
     {
     private:
         Logger &m_Logger;
-        std::unique_ptr<WindowUpdater> m_WindowUpdater;
+        WindowUpdater &m_WindowUpdater;
 
     public:
-        explicit CorePlugin(Logger &logger, std::unique_ptr<WindowUpdater> windowUpdater);
+        explicit CorePlugin(Logger &logger, WindowUpdater &windowUpdater);
 
         void Start() override;
         void Stop() override;

@@ -117,69 +117,86 @@ namespace
             return DefWindowProcW(window, message, w, l);
         }
     }
+
+    class NativeWindowHandle : public WindowHandle
+    {
+    private:
+        HWND m_Handle;
+        std::unique_ptr<WindowListener> m_Listener;
+
+    public:
+        explicit NativeWindowHandle(HWND handle, std::unique_ptr<WindowListener> listener):
+            m_Handle(handle),
+            m_Listener(std::move(listener))
+        {
+        }
+
+        ~NativeWindowHandle() override
+        {
+            DestroyWindow(m_Handle);
+        }
+
+        void *AsRawPtr() const override
+        {
+            return m_Handle;
+        }
+
+        void Poll() override
+        {
+            auto message = MSG();
+            while (PeekMessageW(&message, m_Handle, 0, 0, PM_REMOVE) != 0)
+            {
+                TranslateMessage(&message);
+                DispatchMessageW(&message);
+            }
+        }
+    };
+
+    class NativeWindowClass : public WindowClass
+    {
+    private:
+        HINSTANCE m_Instance;
+        LPCWSTR m_ClassName;
+
+    public:
+        explicit NativeWindowClass(HINSTANCE instance, LPCWSTR className):
+            m_Instance(instance),
+            m_ClassName(className)
+        {
+        }
+
+        ~NativeWindowClass() override
+        {
+            UnregisterClassW(m_ClassName, m_Instance);
+        }
+
+        std::unique_ptr<WindowHandle> Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener) override
+        {
+            auto options = DWORD(0);
+            auto title = ToUtf16(settings.Title);
+            auto style = WS_OVERLAPPEDWINDOW;
+            auto x = CW_USEDEFAULT;
+            auto y = CW_USEDEFAULT;
+            auto width = static_cast<int>(settings.Size[0]);
+            auto height = static_cast<int>(settings.Size[1]);
+            auto *parent = HWND(nullptr);
+            auto *menu = HMENU(nullptr);
+            auto *window = CreateWindowExW(options, m_ClassName, title.c_str(), style, x, y, width, height, parent, menu, m_Instance, listener.get());
+            if (window == nullptr)
+            {
+                throw LastErrorToException("Failed to create window");
+            }
+            ShowWindow(window, SW_NORMAL);
+            return std::make_unique<NativeWindowHandle>(window, std::move(listener));
+        }
+    };
 }
 
 namespace Eternal
 {
-    NativeWindowHandle::NativeWindowHandle(HWND handle, std::unique_ptr<WindowListener> listener):
-        m_Handle(handle),
-        m_Listener(std::move(listener))
+    std::unique_ptr<WindowClass> CreateNativeWindowClass(const std::string &name)
     {
-    }
-
-    NativeWindowHandle::~NativeWindowHandle()
-    {
-        DestroyWindow(m_Handle);
-    }
-
-    void *NativeWindowHandle::AsRawPtr() const
-    {
-        return m_Handle;
-    }
-
-    void NativeWindowHandle::Poll()
-    {
-        auto message = MSG();
-        while (PeekMessageW(&message, m_Handle, 0, 0, PM_REMOVE) != 0)
-        {
-            TranslateMessage(&message);
-            DispatchMessageW(&message);
-        }
-    }
-
-    NativeWindowClass::NativeWindowClass(HINSTANCE instance, LPCWSTR className):
-        m_Instance(instance),
-        m_ClassName(className)
-    {
-    }
-
-    NativeWindowClass::~NativeWindowClass()
-    {
-        UnregisterClassW(m_ClassName, m_Instance);
-    }
-
-    std::unique_ptr<WindowHandle> NativeWindowClass::Instanciate(const WindowSettings &settings, std::unique_ptr<WindowListener> listener)
-    {
-        auto options = DWORD(0);
-        auto title = ToUtf16(settings.Title);
-        auto style = WS_OVERLAPPEDWINDOW;
-        auto x = CW_USEDEFAULT;
-        auto y = CW_USEDEFAULT;
-        auto width = static_cast<int>(settings.Size[0]);
-        auto height = static_cast<int>(settings.Size[1]);
-        auto *parent = HWND(nullptr);
-        auto *menu = HMENU(nullptr);
-        auto *window = CreateWindowExW(options, m_ClassName, title.c_str(), style, x, y, width, height, parent, menu, m_Instance, listener.get());
-        if (window == nullptr)
-        {
-            throw LastErrorToException("Failed to create window");
-        }
-        ShowWindow(window, SW_NORMAL);
-        return std::make_unique<NativeWindowHandle>(window, std::move(listener));
-    }
-
-    std::unique_ptr<WindowClass> CreateNativeWindowClass(HINSTANCE instance, const std::string &name)
-    {
+        auto instance = GetModuleHandleW(nullptr);
         auto wname = ToUtf16(name);
         auto settings = WNDCLASSW();
         settings.lpfnWndProc = &ProcessMessage;
@@ -192,11 +209,5 @@ namespace Eternal
         }
         const auto *className = reinterpret_cast<LPCWSTR>(atom);
         return std::make_unique<NativeWindowClass>(instance, className);
-    }
-
-    std::unique_ptr<WindowClass> CreateNativeWindowClass(const std::string &name)
-    {
-        auto *instance = GetModuleHandleW(nullptr);
-        return CreateNativeWindowClass(instance, name);
     }
 }

@@ -19,11 +19,12 @@ namespace Eternal
         auto windowManager = std::make_unique<WindowManager>(*windows);
         auto windowUpdater = std::make_unique<WindowUpdater>(std::move(windows));
 
-        auto core = std::make_unique<CorePlugin>(*logger, std::move(windowUpdater));
+        auto core = std::make_unique<CorePlugin>(*logger, *windowUpdater);
 
         auto engineProperties = std::make_unique<EngineProperties>();
         engineProperties->EventLoop = std::move(eventLoop);
         engineProperties->Logger = std::move(logger);
+        engineProperties->WindowUpdater = std::move(windowUpdater);
         engineProperties->WindowManager = std::move(windowManager);
 
         auto engine = std::make_unique<Engine>(std::move(engineProperties));
