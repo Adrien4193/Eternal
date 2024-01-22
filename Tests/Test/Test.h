@@ -27,29 +27,19 @@ struct FailureInfo
 
 std::string FormatFailureInfo(const FailureInfo &info);
 
-class FailureHandler
-{
-public:
-    virtual ~FailureHandler() = default;
+using FailureHandler = std::function<void(const FailureInfo &info)>;
 
-    virtual void Handle(const FailureInfo &info) = 0;
-};
-
-class ConsoleFailureHandler : public FailureHandler
-{
-public:
-    void Handle(const FailureInfo &info) override;
-};
+void PrintFailureInfo(const FailureInfo &info);
 
 class TestCase
 {
 private:
     std::string m_Name;
-    std::unique_ptr<FailureHandler> m_Handler;
+    FailureHandler m_Handler;
     std::unordered_map<std::string, std::function<void()>> m_Tests;
 
 public:
-    explicit TestCase(std::string name, std::unique_ptr<FailureHandler> handler);
+    explicit TestCase(std::string name, FailureHandler handler);
 
     int Run();
 
@@ -66,7 +56,7 @@ void AssertThrow(CallableType &&callable, std::source_location source = std::sou
 {
     try
     {
-        callable();
+        std::forward<CallableType>(callable)();
     }
     catch (const ExceptionType &)
     {

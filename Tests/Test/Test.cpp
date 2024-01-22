@@ -21,16 +21,16 @@ std::string FormatFailureInfo(const FailureInfo &info)
     const auto &source = info.Source;
     const auto *file = source.file_name();
     auto line = source.line();
-    return std::format("Test case '{}.{}' failed at {}:{}.", testCase, test, file, line);
+    return std::format("Test case '{}.{}' failed {}:{}.", testCase, test, file, line);
 }
 
-void ConsoleFailureHandler::Handle(const FailureInfo &info)
+void PrintFailureInfo(const FailureInfo &info)
 {
     auto message = FormatFailureInfo(info);
     std::cout << message << '\n';
 }
 
-TestCase::TestCase(std::string name, std::unique_ptr<FailureHandler> handler):
+TestCase::TestCase(std::string name, FailureHandler handler):
     m_Name(std::move(name)),
     m_Handler(std::move(handler))
 {
@@ -50,7 +50,7 @@ int TestCase::Run()
             info.TestCase = m_Name;
             info.Test = name;
             info.Source = e.GetSource();
-            m_Handler->Handle(info);
+            m_Handler(info);
             return -1;
         }
     }
@@ -71,7 +71,7 @@ std::function<void()> &TestCase::operator[](std::string name)
 
 TestCase CreateTestCase(std::string name)
 {
-    return TestCase(std::move(name), std::make_unique<ConsoleFailureHandler>());
+    return TestCase(std::move(name), [](const auto &info) { PrintFailureInfo(info); });
 }
 
 void Assert(bool value, std::source_location source)

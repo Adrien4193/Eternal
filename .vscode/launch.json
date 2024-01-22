@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Sandbox",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "(ctest) Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${cmake.testProgram}",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "${cmake.testArgs}"
+            ]
+        }
+    ]
+}

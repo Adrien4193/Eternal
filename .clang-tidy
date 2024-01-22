@@ -8,19 +8,14 @@ Checks: -*
   performance-*
   portability-*
   readability-*
-  -bugprone-easily-swappable-parameters
-  -cppcoreguidelines-avoid-c-arrays
-  -cppcoreguidelines-avoid-const-or-ref-data-members
   -cppcoreguidelines-avoid-magic-numbers
+  -cppcoreguidelines-missing-std-forward
   -cppcoreguidelines-pro-*
-  -cppcoreguidelines-special-member-functions
-  -modernize-avoid-c-arrays
+  -misc-include-cleaner
   -modernize-use-nodiscard
   -modernize-use-trailing-return-type
-  -performance-no-int-to-ptr
   -readability-identifier-length
   -readability-magic-numbers
-  -readability-uppercase-literal-suffix
 
 HeaderFilterRegex: ".*"
 

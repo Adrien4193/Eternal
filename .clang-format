@@ -1,4 +1,3 @@
----
 BasedOnStyle: Microsoft
 AccessModifierOffset: -4
 AlignAfterOpenBracket: AlwaysBreak
@@ -62,7 +61,7 @@ NamespaceIndentation: All
 PackConstructorInitializers: Never
 PointerAlignment: Right
 QualifierAlignment: Custom # Warning
-QualifierOrder: ['static', 'inline', 'const', 'volatile', 'type'] # Warning
+QualifierOrder: ["static", "inline", "const", "volatile", "type"] # Warning
 ReferenceAlignment: Right
 ReflowComments: true
 RequiresClausePosition: WithPreceding
