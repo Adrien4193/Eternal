@@ -1,3 +1,6 @@
 .vs
+.vscode
+vcpkg
 Build
 Install
+CMakeUserPresets.json
