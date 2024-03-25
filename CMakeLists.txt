@@ -3,6 +3,8 @@
 project(Eternal VERSION 1.0.0 LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+option(ETERNAL_ENABLE_APPLICATIONS "Build applications" ON)
+option(ETERNAL_ENABLE_TESTING "Build tests" ON)
 
 list(PREPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 
@@ -30,7 +32,12 @@ else()
 endif()
 
 add_subdirectory(Source)
-add_subdirectory(Applications)
 
-include(CTest)
-add_subdirectory(Tests)
+if(ETERNAL_ENABLE_APPLICATIONS)
+    add_subdirectory(Applications)
+endif()
+
+if(ETERNAL_ENABLE_TESTING)
+    include(CTest)
+    add_subdirectory(Tests)
+endif()

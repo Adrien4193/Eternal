@@ -1,11 +1,12 @@
 include(EternalLibrary)
 
-eternal_library(Core)
+eternal_library(Core ./Core)
 
 if(WIN32)
-    eternal_library(Windows)
-    target_link_libraries(Windows PUBLIC Eternal::Core)
+    eternal_library(Platform ./Platform/Win32)
 endif()
+
+target_link_libraries(Platform PUBLIC Eternal::Core)
 
 install(
     EXPORT EternalTargets

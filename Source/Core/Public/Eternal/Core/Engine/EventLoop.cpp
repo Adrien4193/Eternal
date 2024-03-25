@@ -2,13 +2,13 @@
 
 namespace Eternal
 {
-    EventLoop::EventLoop(std::function<void()> stop):
-        m_Stop(std::move(stop))
+    EventLoop::EventLoop(EventLoopPrivate &eventLoop):
+        m_EventLoop(eventLoop)
     {
     }
 
     void EventLoop::Stop()
     {
-        m_Stop();
+        m_EventLoop.Running = false;
     }
 }

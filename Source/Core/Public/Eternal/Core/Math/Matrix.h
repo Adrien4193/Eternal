@@ -124,9 +124,31 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
+    constexpr Matrix<T, M, N> &operator+=(Matrix<T, M, N> &left, T right)
+    {
+        for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
+        {
+            left[i] += right;
+        }
+        return left;
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
     constexpr Matrix<T, M, N> operator+(Matrix<T, M, N> left, const Matrix<T, M, N> &right)
     {
         return left += right;
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr Matrix<T, M, N> operator+(Matrix<T, M, N> left, T right)
+    {
+        return left += right;
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr Matrix<T, M, N> operator+(T left, Matrix<T, M, N> right)
+    {
+        return right += left;
     }
 
     template<typename T, std::size_t M, std::size_t N>
@@ -140,9 +162,35 @@ namespace Eternal
     }
 
     template<typename T, std::size_t M, std::size_t N>
+    constexpr Matrix<T, M, N> &operator-=(Matrix<T, M, N> &left, T right)
+    {
+        for (auto i = std::size_t(0); i < left.ComponentCount; ++i)
+        {
+            left[i] -= right;
+        }
+        return left;
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
     constexpr Matrix<T, M, N> operator-(Matrix<T, M, N> left, const Matrix<T, M, N> &right)
     {
         return left -= right;
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr Matrix<T, M, N> operator-(Matrix<T, M, N> left, T right)
+    {
+        return left -= right;
+    }
+
+    template<typename T, std::size_t M, std::size_t N>
+    constexpr Matrix<T, M, N> operator-(T left, Matrix<T, M, N> right)
+    {
+        for (auto i = std::size_t(0); i < right.ComponentCount; ++i)
+        {
+            right[i] = left - right[i];
+        }
+        return right;
     }
 
     template<typename T, std::size_t M, std::size_t N>

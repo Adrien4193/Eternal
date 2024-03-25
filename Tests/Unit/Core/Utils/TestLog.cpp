@@ -1,6 +1,8 @@
 #include <Test.h>
 
-#include <Eternal/Core/Utils/Log.h>
+#include <Eternal/Core/Logging/Logger.h>
+
+using namespace Eternal;
 
 int main()
 {
@@ -8,22 +10,22 @@ int main()
 
     test["LevelName"] = []
     {
-        Assert(Eternal::GetLogLevelName(Eternal::LogLevel::Trace) == "Trace");
-        Assert(Eternal::GetLogLevelName(Eternal::LogLevel::Debug) == "Debug");
-        Assert(Eternal::GetLogLevelName(Eternal::LogLevel::Info) == "Info");
-        Assert(Eternal::GetLogLevelName(Eternal::LogLevel::Warn) == "Warn");
-        Assert(Eternal::GetLogLevelName(Eternal::LogLevel::Error) == "Error");
-        Assert(Eternal::GetLogLevelName(Eternal::LogLevel::Fatal) == "Fatal");
+        Assert(GetLogLevelName(LogLevel::Trace) == "Trace");
+        Assert(GetLogLevelName(LogLevel::Debug) == "Debug");
+        Assert(GetLogLevelName(LogLevel::Info) == "Info");
+        Assert(GetLogLevelName(LogLevel::Warn) == "Warn");
+        Assert(GetLogLevelName(LogLevel::Error) == "Error");
+        Assert(GetLogLevelName(LogLevel::Fatal) == "Fatal");
     };
 
     test["FormatRecord"] = []
     {
-        auto record = Eternal::LogRecord();
+        auto record = LogRecord();
         record.Name = "Test";
-        record.Level = Eternal::LogLevel::Debug;
+        record.Level = LogLevel::Debug;
         record.Message = "This is a test.";
 
-        auto message = Eternal::FormatLogRecord(record);
+        auto message = FormatLogRecord(record);
         const auto *expected = "[Debug][Test]: This is a test.";
         Assert(message == expected);
     };
@@ -31,15 +33,15 @@ int main()
     test["Logger"] = []
     {
         auto called = false;
-        auto logger = Eternal::Logger("Test", Eternal::LogLevel::Debug, [&](auto &) { called = true; });
+        auto logger = Logger("Test", LogLevel::Debug, [&](auto &) { called = true; });
 
         Assert(logger.GetName() == "Test");
 
-        Assert(logger.GetLevel() == Eternal::LogLevel::Debug);
+        Assert(logger.GetLevel() == LogLevel::Debug);
 
-        Assert(logger.IsEnabled(Eternal::LogLevel::Debug));
-        Assert(!logger.IsEnabled(Eternal::LogLevel::Trace));
-        Assert(logger.IsEnabled(Eternal::LogLevel::Info));
+        Assert(logger.IsEnabled(LogLevel::Debug));
+        Assert(!logger.IsEnabled(LogLevel::Trace));
+        Assert(logger.IsEnabled(LogLevel::Info));
 
         logger.Trace("Not logged");
         Assert(!called);

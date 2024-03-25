@@ -1,23 +1,23 @@
-function(eternal_library NAME)
+function(eternal_library NAME FOLDER)
     add_library(${NAME})
 
     add_library(Eternal::${NAME} ALIAS ${NAME})
 
-    file(GLOB_RECURSE PUBLIC_HEADERS ${NAME}/Public/*.h)
+    file(GLOB_RECURSE PUBLIC_HEADERS ${FOLDER}/Public/*.h)
 
     file(
         GLOB_RECURSE
         PRIVATE_SOURCES
-        ${NAME}/Public/*.cpp
-        ${NAME}/Private/*.h
-        ${NAME}/Private/*.cpp
+        ${FOLDER}/Public/*.cpp
+        ${FOLDER}/Private/*.h
+        ${FOLDER}/Private/*.cpp
     )
 
     target_sources(
         ${NAME}
         PUBLIC
         FILE_SET HEADERS
-        BASE_DIRS ${NAME}/Public
+        BASE_DIRS ${FOLDER}/Public
         FILES ${PUBLIC_HEADERS}
         PRIVATE
         ${PRIVATE_SOURCES}
@@ -26,9 +26,9 @@ function(eternal_library NAME)
     target_include_directories(
         ${NAME}
         PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${NAME}/Public>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${FOLDER}/Public>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-        PRIVATE ${NAME}/Private
+        PRIVATE ${FOLDER}/Private
     )
 
     include(EternalExport)

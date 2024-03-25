@@ -2,27 +2,37 @@
 
 #include <memory>
 
+#include <Eternal/Core/Logging/Logger.h>
+#include <Eternal/Core/Window/WindowManager.h>
+
 #include "EventLoop.h"
-#include "Logger.h"
 
 namespace Eternal
 {
+    struct EnginePrivate
+    {
+        std::unique_ptr<EventLoopPrivate> EventLoopPrivate;
+        std::unique_ptr<EventLoop> EventLoop;
+        std::unique_ptr<Logger> Logger;
+        std::unique_ptr<WindowManagerPrivate> WindowManagerPrivate;
+        std::unique_ptr<WindowManager> WindowManager;
+    };
+
     class Engine
     {
     private:
-        std::unique_ptr<EventLoop> m_EventLoop;
-        std::unique_ptr<Logger> m_Logger;
+        EnginePrivate &m_Engine;
 
     public:
-        ETERNAL_EXPORT explicit Engine(std::unique_ptr<EventLoop> eventLoop, std::unique_ptr<Logger> logger);
-        ~Engine() = default;
+        ETERNAL_CORE_API explicit Engine(EnginePrivate &engine);
 
         Engine(const Engine &other) = delete;
         Engine &operator=(const Engine &other) = delete;
         Engine(Engine &&other) = delete;
         Engine &operator=(Engine &&other) = delete;
 
-        ETERNAL_EXPORT EventLoop &GetEventLoop() const;
-        ETERNAL_EXPORT Logger &GetLogger() const;
+        ETERNAL_CORE_API EventLoop &GetEventLoop() const;
+        ETERNAL_CORE_API Logger &GetLogger() const;
+        ETERNAL_CORE_API WindowManager &GetWindowManager() const;
     };
 }

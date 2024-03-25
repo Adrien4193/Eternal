@@ -2,6 +2,8 @@
 
 #include <Eternal/Core/Utils/IdGenerator.h>
 
+using namespace Eternal;
+
 int main()
 {
     auto test = CreateTestCase("IdGenerator");

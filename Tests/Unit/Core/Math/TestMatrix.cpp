@@ -2,10 +2,10 @@
 
 #include <Eternal/Core/Math/Matrix.h>
 
+using namespace Eternal;
+
 int main()
 {
-    using namespace Eternal;
-
     auto test = CreateTestCase("Matrix");
 
     test["Default"] = []
@@ -50,16 +50,16 @@ int main()
         auto right = Matrix<int, 1, 2>(1, 3);
 
         Assert(left == right);
-        AssertFalse(left != right);
-        AssertFalse(left < right);
+        Assert(!(left != right));
+        Assert(!(left < right));
         Assert(left <= right);
-        AssertFalse(right > left);
+        Assert(!(right > left));
         Assert(right >= left);
 
         right[0] += 1;
 
         Assert(left != right);
-        AssertFalse(left == right);
+        Assert(!(left == right));
         Assert(left < right);
         Assert(left <= right);
         Assert(right > left);
@@ -75,17 +75,31 @@ int main()
         Assert(+left == left);
 
         Assert(left + right == Matrix<int, 2, 2>(6, 8, 10, 12));
+        Assert(left + 2 == Matrix<int, 2, 2>(3, 4, 5, 6));
+        Assert(2 + left == Matrix<int, 2, 2>(3, 4, 5, 6));
+
         Assert(right - left == Matrix<int, 2, 2>(4, 4, 4, 4));
+        Assert(left - 2 == Matrix<int, 2, 2>(-1, 0, 1, 2));
+        Assert(2 - left == Matrix<int, 2, 2>(1, 0, -1, -2));
+
         Assert(left * right == Matrix<int, 2, 2>(5, 12, 21, 32));
         Assert(left * 2 == Matrix<int, 2, 2>(2, 4, 6, 8));
         Assert(2 * left == left * 2);
+
+        Assert(right / left == Matrix<int, 2, 2>(5, 3, 2, 2));
         Assert(right / 2 == Matrix<int, 2, 2>(2, 3, 3, 4));
         Assert(4 / left == Matrix<int, 2, 2>(4, 2, 1, 1));
 
         left += right;
         Assert(left == Matrix<int, 2, 2>(6, 8, 10, 12));
 
+        left += 2;
+        Assert(left == Matrix<int, 2, 2>(8, 10, 12, 14));
+
         left -= right;
+        Assert(left == Matrix<int, 2, 2>(3, 4, 5, 6));
+
+        left -= 2;
         Assert(left == Matrix<int, 2, 2>(1, 2, 3, 4));
 
         left *= right;

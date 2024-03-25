@@ -2,7 +2,7 @@
     "version": 5,
     "configurePresets": [
         {
-            "name": "default",
+            "name": "user default",
             "toolchainFile": "vcpkg/scripts/buildsystems/vcpkg.cmake"
         }
     ]

@@ -1,16 +1,19 @@
 #pragma once
 
-#include <functional>
-
 namespace Eternal
 {
+    struct EventLoopPrivate
+    {
+        bool Running = false;
+    };
+
     class EventLoop
     {
     private:
-        std::function<void()> m_Stop;
+        EventLoopPrivate &m_EventLoop;
 
     public:
-        ETERNAL_EXPORT explicit EventLoop(std::function<void()> stop);
+        ETERNAL_CORE_API explicit EventLoop(EventLoopPrivate &eventLoop);
         ~EventLoop() = default;
 
         EventLoop(const EventLoop &other) = delete;
@@ -18,6 +21,6 @@ namespace Eternal
         EventLoop(EventLoop &&other) = delete;
         EventLoop &operator=(EventLoop &&other) = delete;
 
-        ETERNAL_EXPORT void Stop();
+        ETERNAL_CORE_API void Stop();
     };
 }

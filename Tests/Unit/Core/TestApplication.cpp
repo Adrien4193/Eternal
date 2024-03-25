@@ -1,13 +1,8 @@
 #include <Test.h>
 
-#include <Eternal/Core/Application.h>
+#include <Eternal/Core/Factory.h>
 
-Eternal::Engine MockEngine(Eternal::EventLoopProperties &properties)
-{
-    auto eventLoop = Eternal::EventLoop(properties);
-    auto logger = Eternal::Logger("Test", Eternal::LogLevel::Info, [](auto &) {});
-    return Eternal::Engine(std::move(eventLoop), std::move(logger));
-}
+using namespace Eternal;
 
 int main()
 {
@@ -15,13 +10,14 @@ int main()
 
     test["Run"] = []
     {
-        auto properties = Eternal::EventLoopProperties();
-        properties.Running = true;
+        auto settings = ApplicationSettings{
+            .Logger = Logger("Test", LogLevel::Info, [&](auto &) {}),
+            .WindowHandleFactory = [](const auto &) { return WindowHandle{}; },
+        };
 
-        auto loop = Eternal::ApplicationLoop(properties);
-
-        auto engine = MockEngine(properties);
-        auto application = Eternal::Application(std::move(engine), std::move(loop));
+        auto application = CreateApplication(std::move(settings));
+        auto &engine = application.GetEngine();
+        auto &eventLoop = engine.GetEventLoop();
 
         auto started = false;
         auto stopped = false;
@@ -31,7 +27,7 @@ int main()
         {
             if (++updated == 3)
             {
-                properties.Running = false;
+                eventLoop.Stop();
             }
         };
 

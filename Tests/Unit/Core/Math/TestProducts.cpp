@@ -2,10 +2,10 @@
 
 #include <Eternal/Core/Math/Products.h>
 
+using namespace Eternal;
+
 int main()
 {
-    using namespace Eternal;
-
     auto test = CreateTestCase("Products");
 
     test["Dot"] = []

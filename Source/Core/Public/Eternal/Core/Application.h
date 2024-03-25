@@ -2,33 +2,45 @@
 
 #include <functional>
 #include <memory>
+#include <vector>
 
 #include <Eternal/Core/Engine/Engine.h>
 
 namespace Eternal
 {
-    class Application
+    class ApplicationScheduler
     {
     private:
-        std::function<bool()> m_IsRunning;
-        std::unique_ptr<Engine> m_Engine;
         std::vector<std::function<void()>> m_StartHandlers;
         std::vector<std::function<void()>> m_UpdateHandlers;
         std::vector<std::function<void()>> m_StopHandlers;
 
     public:
-        ETERNAL_EXPORT explicit Application(std::function<bool()> isRunning, std::unique_ptr<Engine> engine);
-        ~Application() = default;
+        void OnStart(std::function<void()> handler);
+        void Start();
+        void OnStop(std::function<void()> handler);
+        void Stop();
+        void OnUpdate(std::function<void()> handler);
+        void Update();
+    };
 
-        Application(const Application &) = delete;
-        Application &operator=(const Application &) = delete;
-        Application(Application &&) = delete;
-        Application &operator=(Application &&) = delete;
+    class Application
+    {
+    private:
+        std::unique_ptr<EnginePrivate> m_EnginePrivate;
+        std::unique_ptr<Engine> m_Engine;
+        ApplicationScheduler m_Scheduler;
 
-        ETERNAL_EXPORT Engine &GetEngine();
-        ETERNAL_EXPORT void OnStart(std::function<void()> handler);
-        ETERNAL_EXPORT void OnStop(std::function<void()> handler);
-        ETERNAL_EXPORT void OnUpdate(std::function<void()> handler);
-        ETERNAL_EXPORT void Run();
+    public:
+        ETERNAL_CORE_API explicit Application(
+            std::unique_ptr<EnginePrivate> enginePrivate,
+            std::unique_ptr<Engine> engine,
+            ApplicationScheduler scheduler);
+
+        ETERNAL_CORE_API Engine &GetEngine() const;
+        ETERNAL_CORE_API void OnStart(std::function<void()> handler);
+        ETERNAL_CORE_API void OnStop(std::function<void()> handler);
+        ETERNAL_CORE_API void OnUpdate(std::function<void()> handler);
+        ETERNAL_CORE_API void Run();
     };
 }
