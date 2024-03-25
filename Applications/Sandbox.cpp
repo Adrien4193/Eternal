@@ -27,6 +27,10 @@ public:
     void Start()
     {
         m_Logger.Info("Start");
+
+        m_Window.SetTitle("Test");
+        m_Window.SetPosition({100, 1000});
+        m_Window.Resize({200, 200});
     }
 
     void Stop()
@@ -36,7 +40,7 @@ public:
 
     void Update()
     {
-        m_Logger.Info("Update");
+        m_Logger.Debug("Update");
 
         for (const auto &e : m_Window.GetEvents())
         {
@@ -48,6 +52,11 @@ private:
     void On(const Eternal::WindowMove &e)
     {
         m_Logger.Info("Window moved: [{}, {}]", e.Position[0], e.Position[1]);
+    }
+
+    void On(const Eternal::WindowRename &e)
+    {
+        m_Logger.Info("Window renamed: {}", e.Title);
     }
 
     void On(const Eternal::WindowResize &e)
@@ -79,12 +88,13 @@ int main()
     auto &eventLoop = engine.GetEventLoop();
 
     auto logger = Eternal::CreateConsoleLogger("Sandbox");
+    logger.SetLevel(Eternal::LogLevel::Info);
 
     auto &windowManager = engine.GetWindowManager();
     auto &window = windowManager.AddWindow({
         .Title = "Sandbox",
-        .Position = {1600, 900},
-        .Size = {400, 400},
+        .Position = {1200, 400},
+        .Size = {800, 800},
     });
 
     auto sandbox = Sandbox(eventLoop, logger, window);

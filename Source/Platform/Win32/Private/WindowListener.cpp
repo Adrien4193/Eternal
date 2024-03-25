@@ -47,7 +47,7 @@ namespace Eternal
         {
         case WM_SETTEXT:
             OnSetTitle(message.Lparam, events);
-            return 0;
+            break;
         case WM_MOVE:
             OnMove(message.Lparam, events);
             return 0;
@@ -58,7 +58,8 @@ namespace Eternal
             OnClose(events);
             return 0;
         default:
-            return DefWindowProcW(message.Window, message.Type, message.Wparam, message.Lparam);
+            break;
         }
+        return DefWindowProcW(message.Window, message.Type, message.Wparam, message.Lparam);
     }
 }
