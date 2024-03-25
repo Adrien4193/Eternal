@@ -23,24 +23,24 @@ namespace
         return *static_cast<EventBuffer *>(data);
     }
 
-    EventBuffer &GetOrSetEventBuffer(HWND window, UINT message, LPARAM lparam)
+    EventBuffer &GetOrSetEventBuffer(const WindowMessage &message)
     {
-        if (message == WM_CREATE)
+        if (message.Type == WM_CREATE)
         {
-            return SetEventBuffer(window, lparam);
+            return SetEventBuffer(message.Window, message.Lparam);
         }
-        return GetEventBuffer(window);
+        return GetEventBuffer(message.Window);
     }
 
     LRESULT CALLBACK ProcessMessage(HWND window, UINT type, WPARAM wparam, LPARAM lparam)
     {
-        auto &events = GetOrSetEventBuffer(window, type, lparam);
         auto message = WindowMessage{
             .Window = window,
             .Type = type,
             .Wparam = wparam,
             .Lparam = lparam,
         };
+        auto &events = GetOrSetEventBuffer(message);
         return ProcessWindowMessage(message, events);
     }
 }

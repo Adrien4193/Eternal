@@ -23,7 +23,7 @@ namespace Eternal
         GuiThread(GuiThread &&) = default;
         GuiThread &operator=(GuiThread &&) = default;
 
-        auto Run(std::invocable<> auto &&task) -> decltype(task())
+        auto Run(std::invocable<> auto &&task) const -> decltype(task())
         {
             using ResultType = decltype(task());
             auto promise = std::promise<ResultType>();
@@ -53,7 +53,7 @@ namespace Eternal
         }
 
     private:
-        void Schedule(const std::function<void()> &task);
+        void Schedule(const std::function<void()> &task) const;
     };
 
     GuiThread StartGuiThread();

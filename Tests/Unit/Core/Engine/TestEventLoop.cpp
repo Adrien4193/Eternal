@@ -13,7 +13,7 @@ int main()
         auto eventLoopPrivate = EventLoopPrivate();
         auto eventLoop = EventLoop(eventLoopPrivate);
 
-        Assert(eventLoopPrivate.Running == false);
+        Assert(!eventLoopPrivate.Running);
     };
 
     return test.Run();

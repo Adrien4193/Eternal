@@ -25,6 +25,7 @@ namespace Eternal
 
     public:
         ETERNAL_CORE_API explicit Engine(EnginePrivate &engine);
+        ~Engine() = default;
 
         Engine(const Engine &other) = delete;
         Engine &operator=(const Engine &other) = delete;

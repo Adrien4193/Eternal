@@ -11,7 +11,7 @@ int main()
     test["Manager"] = []
     {
         auto dummy = 0;
-        auto nativeHandle = static_cast<void *>(&dummy);
+        auto *nativeHandle = static_cast<void *>(&dummy);
         auto events = std::vector<WindowEvent>{WindowResize({1, 2}), WindowMove({3, 4})};
         auto title = std::string("Test");
         auto position = Vector2(1, 2);

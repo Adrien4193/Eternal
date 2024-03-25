@@ -55,8 +55,9 @@ private:
         m_Logger.Info("Window resized: {}x{}", e.Size[0], e.Size[1]);
     }
 
-    void On(const Eternal::WindowClose &)
+    void On(const Eternal::WindowClose &e)
     {
+        (void)e;
         m_EventLoop.Stop();
     }
 

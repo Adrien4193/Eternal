@@ -113,7 +113,7 @@ namespace Eternal
         }
     }
 
-    void GuiThread::Schedule(const std::function<void()> &task)
+    void GuiThread::Schedule(const std::function<void()> &task) const
     {
         ScheduleTask(m_Id, task);
     }
@@ -130,7 +130,7 @@ namespace Eternal
         };
         auto thread = std::jthread(loop);
         Wait(event);
-        auto nativeThread = thread.native_handle();
+        auto *nativeThread = thread.native_handle();
         auto id = GetThreadId(nativeThread);
         return GuiThread(id, std::move(thread));
     }
