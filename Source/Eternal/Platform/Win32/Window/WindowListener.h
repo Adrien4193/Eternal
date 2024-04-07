@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <mutex>
 #include <vector>
 
@@ -17,17 +16,8 @@ namespace Eternal
         std::vector<WindowEvent> m_Events;
 
     public:
-        void Push(WindowEvent e)
-        {
-            auto lock = std::lock_guard(m_Mutex);
-            m_Events.push_back(std::move(e));
-        }
-
-        std::vector<WindowEvent> Poll()
-        {
-            auto lock = std::lock_guard(m_Mutex);
-            return std::exchange(m_Events, {});
-        }
+        void Push(WindowEvent e);
+        std::vector<WindowEvent> Poll();
     };
 
     struct WindowMessage

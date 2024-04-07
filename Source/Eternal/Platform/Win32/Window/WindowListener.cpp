@@ -41,6 +41,18 @@ namespace
 
 namespace Eternal
 {
+    void EventBuffer::Push(WindowEvent e)
+    {
+        auto lock = std::lock_guard(m_Mutex);
+        m_Events.push_back(std::move(e));
+    }
+
+    std::vector<WindowEvent> EventBuffer::Poll()
+    {
+        auto lock = std::lock_guard(m_Mutex);
+        return std::exchange(m_Events, {});
+    }
+
     LRESULT ProcessWindowMessage(const WindowMessage &message, EventBuffer &events)
     {
         switch (message.Type)

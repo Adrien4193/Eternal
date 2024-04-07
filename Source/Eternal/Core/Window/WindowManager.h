@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <unordered_map>
 
 #include <Eternal/Core/Utils/IdGenerator.h>
@@ -15,7 +14,7 @@ namespace Eternal
     private:
         WindowHandleFactory m_HandleFactory;
         IdGenerator<WindowId> m_IdGenerator;
-        std::unordered_map<WindowId, std::unique_ptr<WindowPrivate>> m_Windows;
+        std::unordered_map<WindowId, WindowPrivate> m_Windows;
 
     public:
         ETERNAL_CORE_API explicit WindowManager(WindowHandleFactory handleFactory);

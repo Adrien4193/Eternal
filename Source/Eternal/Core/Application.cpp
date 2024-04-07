@@ -4,7 +4,7 @@ namespace Eternal
 {
     void Application::OnStart(std::function<void()> handler)
     {
-        m_StopHandlers.push_back(std::move(handler));
+        m_StartHandlers.push_back(std::move(handler));
     }
 
     void Application::OnStop(std::function<void()> handler)

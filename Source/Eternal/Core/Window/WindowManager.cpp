@@ -18,10 +18,9 @@ namespace Eternal
         try
         {
             auto window = CreateWindowPrivate(id, std::move(handle), settings);
-            auto ptr = std::make_unique<WindowPrivate>(std::move(window));
-            auto [i, inserted] = m_Windows.emplace(id, std::move(ptr));
+            auto [i, inserted] = m_Windows.emplace(id, std::move(window));
             assert(inserted);
-            return WindowRef(*i->second);
+            return WindowRef(i->second);
         }
         catch (...)
         {
@@ -48,9 +47,9 @@ namespace Eternal
 
     void WindowManager::Poll()
     {
-        for (const auto &[id, window] : m_Windows)
+        for (auto &[id, window] : m_Windows)
         {
-            PollWindowPrivate(*window);
+            PollWindowPrivate(window);
         }
     }
 }
