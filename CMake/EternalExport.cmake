@@ -1,18 +1,18 @@
-function(eternal_export NAME)
-    string(TOUPPER ${NAME} NAME_UPPERCASE)
+function(eternal_export TARGET)
+    string(TOUPPER ${TARGET} TARGET_UPPERCASE)
 
-    set(MACRO_NAME ETERNAL_${NAME_UPPERCASE}_API)
+    set(MACRO_NAME ETERNAL_${TARGET_UPPERCASE}_API)
 
-    get_target_property(TARGET_TYPE ${NAME} TYPE)
+    get_target_property(TARGET_TYPE ${TARGET} TYPE)
 
     if(NOT TARGET_TYPE STREQUAL SHARED_LIBRARY)
-        target_compile_definitions(${NAME} PUBLIC "${MACRO_NAME}=")
+        target_compile_definitions(${TARGET} PUBLIC "${MACRO_NAME}=")
         return()
     endif()
 
     if(MSVC)
         target_compile_definitions(
-            ${NAME}
+            ${TARGET}
             INTERFACE "${MACRO_NAME}=__declspec(dllimport)"
             PRIVATE "${MACRO_NAME}=__declspec(dllexport)"
         )
@@ -20,7 +20,7 @@ function(eternal_export NAME)
     endif()
 
     target_compile_definitions(
-        ${NAME}
+        ${TARGET}
         PUBLIC "${MACRO_NAME}=__attribute__((visibility(\"default\")))"
     )
 endfunction()

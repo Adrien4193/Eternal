@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required(VERSION 3.26)
 
-project(Eternal VERSION 1.0.0 LANGUAGES CXX)
+project(Eternal VERSION 0.1.0)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(ETERNAL_ENABLE_APPLICATIONS "Build applications" ON)
@@ -41,3 +41,5 @@ if(ETERNAL_ENABLE_TESTING)
     include(CTest)
     add_subdirectory(Tests)
 endif()
+
+include(EternalPackage)

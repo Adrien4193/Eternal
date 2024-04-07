@@ -1,6 +1,6 @@
 #include <Test.h>
 
-#include <Eternal/Core/Factory.h>
+#include <Eternal/Core/Application.h>
 
 using namespace Eternal;
 
@@ -10,14 +10,7 @@ int main()
 
     test["Run"] = []
     {
-        auto settings = ApplicationSettings{
-            .Logger = Logger("Test", LogLevel::Info, [&](auto &) {}),
-            .WindowHandleFactory = [](const auto &) { return WindowHandle{}; },
-        };
-
-        auto application = CreateApplication(std::move(settings));
-        auto &engine = application.GetEngine();
-        auto &eventLoop = engine.GetEventLoop();
+        auto application = Application();
 
         auto started = false;
         auto stopped = false;
@@ -27,7 +20,7 @@ int main()
         {
             if (++updated == 3)
             {
-                eventLoop.Stop();
+                application.Quit();
             }
         };
 

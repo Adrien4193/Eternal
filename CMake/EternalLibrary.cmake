@@ -1,45 +1,35 @@
-function(eternal_library NAME FOLDER)
-    add_library(${NAME})
+function(eternal_library TARGET HEADERS SOURCES)
+    add_library(${TARGET})
+    add_library(Eternal::${TARGET} ALIAS ${TARGET})
 
-    add_library(Eternal::${NAME} ALIAS ${NAME})
-
-    file(GLOB_RECURSE PUBLIC_HEADERS ${FOLDER}/Public/*.h)
-
-    file(
-        GLOB_RECURSE
-        PRIVATE_SOURCES
-        ${FOLDER}/Public/*.cpp
-        ${FOLDER}/Private/*.h
-        ${FOLDER}/Private/*.cpp
-    )
+    set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME Eternal${TARGET})
 
     target_sources(
-        ${NAME}
+        ${TARGET}
         PUBLIC
         FILE_SET HEADERS
-        BASE_DIRS ${FOLDER}/Public
-        FILES ${PUBLIC_HEADERS}
+        FILES ${HEADERS}
         PRIVATE
-        ${PRIVATE_SOURCES}
+        ${SOURCES}
     )
 
     target_include_directories(
-        ${NAME}
+        ${TARGET}
         PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${FOLDER}/Public>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/Source>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-        PRIVATE ${FOLDER}/Private
     )
 
     include(EternalExport)
-    eternal_export(${NAME})
+    eternal_export(${TARGET})
 
     install(
-        TARGETS ${NAME}
+        TARGETS ${TARGET}
         EXPORT EternalTargets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        COMPONENT ${TARGET}
     )
 endfunction()
