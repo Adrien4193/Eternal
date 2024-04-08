@@ -23,6 +23,7 @@ function(eternal_library TARGET HEADERS SOURCES)
     include(EternalExport)
     eternal_export(${TARGET})
 
+    include(GNUInstallDirs)
     install(
         TARGETS ${TARGET}
         EXPORT EternalTargets
@@ -30,6 +31,5 @@ function(eternal_library TARGET HEADERS SOURCES)
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Eternal/${TARGET}
-        COMPONENT ${TARGET}
     )
 endfunction()

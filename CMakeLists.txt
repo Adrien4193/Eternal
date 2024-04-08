@@ -43,3 +43,4 @@ if(ETERNAL_ENABLE_TESTING)
 endif()
 
 include(EternalPackage)
+eternal_package()
