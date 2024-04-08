@@ -1,8 +1,8 @@
-function(eternal_package)
+function(eternal_package DESTINATION)
     install(
         EXPORT EternalTargets
         FILE EternalTargets.cmake
-        DESTINATION CMake
+        DESTINATION ${DESTINATION}
         NAMESPACE Eternal::
     )
 
@@ -17,7 +17,7 @@ function(eternal_package)
     configure_package_config_file(
         ${PROJECT_SOURCE_DIR}/CMake/EternalConfig.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/EternalConfig.cmake
-        INSTALL_DESTINATION CMake
+        INSTALL_DESTINATION ${DESTINATION}
     )
 
     write_basic_package_version_file(
@@ -30,6 +30,6 @@ function(eternal_package)
         FILES
         ${CMAKE_CURRENT_BINARY_DIR}/EternalConfig.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/EternalConfigVersion.cmake
-        DESTINATION CMake
+        DESTINATION ${DESTINATION}
     )
 endfunction()
