@@ -4,17 +4,13 @@ project(Eternal VERSION 0.1.0)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(ETERNAL_ENABLE_APPLICATIONS "Build applications" ON)
-option(ETERNAL_ENABLE_TESTING "Build tests" ON)
+option(ETERNAL_ENABLE_TESTS "Build tests" ON)
 
 list(PREPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-
-set(CMAKE_INSTALL_LIBDIR Lib)
-set(CMAKE_INSTALL_BINDIR Bin)
-set(CMAKE_INSTALL_INCLUDEDIR Include)
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
@@ -37,10 +33,10 @@ if(ETERNAL_ENABLE_APPLICATIONS)
     add_subdirectory(Applications)
 endif()
 
-if(ETERNAL_ENABLE_TESTING)
+if(ETERNAL_ENABLE_TESTS)
     include(CTest)
     add_subdirectory(Tests)
 endif()
 
 include(EternalPackage)
-eternal_package(CMake)
+eternal_package(cmake)
