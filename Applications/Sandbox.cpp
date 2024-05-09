@@ -56,15 +56,13 @@ private:
         m_Logger->Info("Window resized: {}x{}", e.Size[0], e.Size[1]);
     }
 
-    void On(const Eternal::WindowClose &e)
+    void On(const Eternal::WindowClose &)
     {
-        (void)e;
         Quit();
     }
 
-    void On(const auto &e)
+    void On(const auto &)
     {
-        (void)e;
     }
 };
 
@@ -74,13 +72,15 @@ int main()
     auto windows = Eternal::WindowManager(nativeWindowHandleFactory);
 
     auto logger = Eternal::CreateConsoleLogger("Sandbox");
-    logger.SetLevel(Eternal::LogLevel::Info);
+    logger.SetLevel(Eternal::LogLevel::Debug);
 
     auto window = windows.Add({
         .Title = "Sandbox",
         .Position = {1200, 400},
         .Size = {800, 800},
     });
+
+    window.Show();
 
     auto sandbox = Sandbox(logger, window);
 

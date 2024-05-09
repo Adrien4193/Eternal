@@ -78,16 +78,20 @@ namespace
         while (true)
         {
             auto code = GetMessageW(&message, nullptr, 0, 0);
+
             if (code <= 0)
             {
                 return;
             }
+
             TranslateMessage(&message);
+
             if (message.hwnd != nullptr)
             {
                 DispatchMessageW(&message);
                 continue;
             }
+
             if (message.message == GuiEventId)
             {
                 RunTask(message.wParam);
@@ -122,16 +126,21 @@ namespace Eternal
     {
         auto *event = CreateEventHandle();
         auto holder = EventPtr(event);
+
         auto loop = [=]
         {
             CreateMessageQueue();
             Notify(event);
             RunMessageLoop();
         };
+
         auto thread = std::jthread(loop);
+
         Wait(event);
+
         auto *nativeThread = thread.native_handle();
         auto id = GetThreadId(nativeThread);
+
         return GuiThread(id, std::move(thread));
     }
 }

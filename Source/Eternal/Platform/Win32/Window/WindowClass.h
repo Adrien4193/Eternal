@@ -1,15 +1,14 @@
 #pragma once
 
-#include <functional>
 #include <memory>
 #include <string_view>
 
 #include <Windows.h>
 
-#include <Eternal/Core/Window/WindowEvents.h>
 #include <Eternal/Core/Window/WindowSettings.h>
 
-#include "WindowListener.h"
+#include "GuiThread.h"
+#include "WindowHandle.h"
 
 namespace Eternal
 {
@@ -27,14 +26,15 @@ namespace Eternal
             void operator()(LPCWSTR className) const;
         };
 
+        GuiThread m_GuiThread;
         HINSTANCE m_Instance;
         std::unique_ptr<const wchar_t, Deleter> m_ClassName;
 
     public:
-        explicit WindowClass(HINSTANCE instance, LPCWSTR className);
+        explicit WindowClass(GuiThread guiThread, HINSTANCE instance, LPCWSTR className);
 
-        HWND Instanciate(const WindowSettings &settings, EventBuffer &events);
+        NativeWindowHandle Instanciate(const WindowSettings &settings);
     };
 
-    WindowClass CreateWindowClass(HINSTANCE instance, std::string_view name);
+    WindowClass CreateWindowClass(GuiThread guiThread, HINSTANCE instance, std::string_view name);
 }

@@ -15,6 +15,7 @@ namespace Eternal
     {
         void *NativePtr;
         std::function<std::vector<WindowEvent>()> Poll;
+        std::function<void()> Show;
         std::function<void(std::string_view)> SetTitle;
         std::function<void(Vector2)> SetPosition;
         std::function<void(Vector2)> Resize;

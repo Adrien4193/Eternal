@@ -4,6 +4,53 @@
 #include <format>
 #include <stdexcept>
 
+namespace
+{
+    using namespace Eternal;
+
+    void On(const WindowRename &e, WindowPrivate &window)
+    {
+        window.Title = e.Title;
+    }
+
+    void On(const WindowMove &e, WindowPrivate &window)
+    {
+        window.Position = e.Position;
+    }
+
+    void On(const WindowResize &e, WindowPrivate &window)
+    {
+        window.Size = e.Size;
+    }
+
+    void On(const WindowClose &e, WindowPrivate &window)
+    {
+        (void)e;
+        (void)window;
+    }
+
+    void PollWindowPrivate(WindowPrivate &window)
+    {
+        auto events = window.Handle.Poll();
+        for (const auto &event : events)
+        {
+            std::visit([&](const auto &e) { On(e, window); }, event);
+        }
+        window.Events = std::move(events);
+    }
+
+    WindowPrivate CreateWindowPrivate(WindowId id, WindowHandle handle, const WindowSettings &settings)
+    {
+        return {
+            .Id = id,
+            .Handle = std::move(handle),
+            .Title = std::string(settings.Title),
+            .Position = settings.Position,
+            .Size = settings.Size,
+        };
+    }
+}
+
 namespace Eternal
 {
     WindowManager::WindowManager(WindowHandleFactory handleFactory):

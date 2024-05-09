@@ -1,8 +1,10 @@
 #pragma once
 
+#include <concepts>
 #include <functional>
 #include <future>
 #include <thread>
+#include <type_traits>
 
 #include <Windows.h>
 
@@ -26,8 +28,10 @@ namespace Eternal
         auto Run(std::invocable<> auto &&task) const -> decltype(task())
         {
             using ResultType = decltype(task());
+
             auto promise = std::promise<ResultType>();
             auto future = promise.get_future();
+
             auto wrapper = [&]
             {
                 try
@@ -47,8 +51,11 @@ namespace Eternal
                     promise.set_exception(std::current_exception());
                 }
             };
+
             auto function = std::function<void()>(wrapper);
+
             Schedule(function);
+
             return future.get();
         }
 

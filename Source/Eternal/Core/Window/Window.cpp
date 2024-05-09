@@ -1,54 +1,7 @@
 #include "Window.h"
 
-namespace
-{
-    using namespace Eternal;
-
-    void On(const WindowRename &e, WindowPrivate &window)
-    {
-        window.Title = e.Title;
-    }
-
-    void On(const WindowMove &e, WindowPrivate &window)
-    {
-        window.Position = e.Position;
-    }
-
-    void On(const WindowResize &e, WindowPrivate &window)
-    {
-        window.Size = e.Size;
-    }
-
-    void On(const WindowClose &e, WindowPrivate &window)
-    {
-        (void)e;
-        (void)window;
-    }
-}
-
 namespace Eternal
 {
-    WindowPrivate CreateWindowPrivate(WindowId id, WindowHandle handle, const WindowSettings &settings)
-    {
-        return {
-            .Id = id,
-            .Handle = std::move(handle),
-            .Title = std::string(settings.Title),
-            .Position = settings.Position,
-            .Size = settings.Size,
-        };
-    }
-
-    void PollWindowPrivate(WindowPrivate &window)
-    {
-        auto events = window.Handle.Poll();
-        for (const auto &event : events)
-        {
-            std::visit([&](const auto &e) { On(e, window); }, event);
-        }
-        window.Events = std::move(events);
-    }
-
     WindowRef::WindowRef(const WindowPrivate &window):
         m_Window(&window)
     {
@@ -67,6 +20,11 @@ namespace Eternal
     std::span<const WindowEvent> WindowRef::GetEvents() const
     {
         return m_Window->Events;
+    }
+
+    void WindowRef::Show()
+    {
+        m_Window->Handle.Show();
     }
 
     std::string_view WindowRef::GetTitle() const

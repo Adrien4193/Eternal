@@ -1,3 +1,3 @@
 #pragma once
 
-#include <Eternal/Platform/Win32/Window/NativeWindow.h>
+#include <Eternal/Platform/Win32/Window/WindowHandleFactory.h>
