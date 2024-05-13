@@ -75,6 +75,7 @@ namespace
     void RunMessageLoop()
     {
         auto message = MSG();
+
         while (true)
         {
             auto code = GetMessageW(&message, nullptr, 0, 0);
@@ -127,14 +128,14 @@ namespace Eternal
         auto *event = CreateEventHandle();
         auto holder = EventPtr(event);
 
-        auto loop = [=]
+        auto messageLoop = [=]
         {
             CreateMessageQueue();
             Notify(event);
             RunMessageLoop();
         };
 
-        auto thread = std::jthread(loop);
+        auto thread = std::jthread(messageLoop);
 
         Wait(event);
 

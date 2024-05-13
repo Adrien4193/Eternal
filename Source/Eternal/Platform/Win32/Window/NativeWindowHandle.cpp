@@ -1,4 +1,4 @@
-#include "WindowHandle.h"
+#include "NativeWindowHandle.h"
 
 #include <cassert>
 #include <utility>
@@ -26,8 +26,7 @@ namespace Eternal
 
     void NativeWindowHandle::Deleter::operator()(HWND handle) const
     {
-        auto destroyWindow = [=] { return DestroyWindow(handle); };
-        auto success = m_GuiThread->Run(destroyWindow);
+        auto success = m_GuiThread->Run([=] { return DestroyWindow(handle); });
         assert(success == TRUE);
     }
 

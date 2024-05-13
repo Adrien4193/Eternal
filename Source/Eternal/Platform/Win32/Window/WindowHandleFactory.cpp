@@ -5,9 +5,9 @@
 #include <Windows.h>
 
 #include "GuiThread.h"
+#include "NativeWindowHandle.h"
+#include "NativeWindowManager.h"
 #include "Utils.h"
-#include "WindowClass.h"
-#include "WindowHandle.h"
 
 namespace Eternal
 {
@@ -17,23 +17,23 @@ namespace Eternal
 
         auto *instance = GetModuleHandleW(nullptr);
 
-        auto windowClass = CreateWindowClass(std::move(guiThread), instance, "Eternal");
+        auto windowClass = CreateWindowClass(instance, "Eternal");
 
-        auto windowClassPtr = std::make_shared<WindowClass>(std::move(windowClass));
+        auto windowManager = std::make_shared<NativeWindowManager>(std::move(guiThread), std::move(windowClass));
 
         return [=](const auto &settings)
         {
-            auto handle = windowClassPtr->Instanciate(settings);
+            auto handle = windowManager->CreateWindowHandle(settings);
 
-            auto handlePtr = std::make_shared<NativeWindowHandle>(std::move(handle));
+            auto ptr = std::make_shared<NativeWindowHandle>(std::move(handle));
 
             return WindowHandle{
-                .NativePtr = handlePtr->Get(),
-                .Poll = [=] { return handlePtr->Poll(); },
-                .Show = [=] { handlePtr->Show(SW_NORMAL); },
-                .SetTitle = [=](auto title) { handlePtr->SetTitle(title); },
-                .SetPosition = [=](auto position) { handlePtr->SetPosition(position); },
-                .Resize = [=](auto size) { handlePtr->Resize(size); },
+                .NativePtr = ptr->Get(),
+                .Poll = [=] { return ptr->Poll(); },
+                .Show = [=] { ptr->Show(SW_NORMAL); },
+                .SetTitle = [=](auto title) { ptr->SetTitle(title); },
+                .SetPosition = [=](auto position) { ptr->SetPosition(position); },
+                .Resize = [=](auto size) { ptr->Resize(size); },
             };
         };
     }

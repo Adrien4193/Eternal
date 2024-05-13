@@ -1,4 +1,4 @@
-#include "WindowClass.h"
+#include "NativeWindowManager.h"
 
 #include "Utils.h"
 
@@ -6,35 +6,13 @@ namespace
 {
     using namespace Eternal;
 
-    HWND CreateNativeWindowHandle(HINSTANCE instance, LPCWSTR className, const WindowSettings &settings, EventBuffer &events)
-    {
-        auto options = DWORD(0);
-        auto title = ToUtf16(settings.Title);
-        auto style = WS_OVERLAPPEDWINDOW;
-        auto x = static_cast<int>(settings.Position[0]);
-        auto y = static_cast<int>(settings.Position[1]);
-        auto width = static_cast<int>(settings.Size[0]);
-        auto height = static_cast<int>(settings.Size[1]);
-        auto *parent = HWND(nullptr);
-        auto *menu = HMENU(nullptr);
-
-        auto *window = CreateWindowExW(options, className, title.c_str(), style, x, y, width, height, parent, menu, instance, &events);
-
-        if (window == nullptr)
-        {
-            throw LastErrorToException("Failed to create window");
-        }
-
-        return window;
-    }
-
-    EventBuffer &GetEventBufferr(HWND window)
+    EventBuffer &GetEventBuffer(HWND window)
     {
         auto data = GetWindowLongPtrW(window, GWLP_USERDATA);
         return *CastIntToPtr<EventBuffer>(data);
     }
 
-    EventBuffer &SetEventBufferr(HWND window, LPARAM lparam)
+    EventBuffer &SetEventBuffer(HWND window, LPARAM lparam)
     {
         auto &settings = *CastIntToPtr<CREATESTRUCT>(lparam);
         auto *data = settings.lpCreateParams;
@@ -43,13 +21,13 @@ namespace
         return *static_cast<EventBuffer *>(data);
     }
 
-    EventBuffer &GetOrSetEventBufferr(HWND window, UINT type, LPARAM lparam)
+    EventBuffer &GetOrSetEventBuffer(HWND window, UINT type, LPARAM lparam)
     {
         if (type == WM_CREATE)
         {
-            return SetEventBufferr(window, lparam);
+            return SetEventBuffer(window, lparam);
         }
-        return GetEventBufferr(window);
+        return GetEventBuffer(window);
     }
 
     void OnSetTitle(LPARAM lparam, EventBuffer &events)
@@ -86,7 +64,7 @@ namespace
 
     LRESULT CALLBACK ProcessMessage(HWND window, UINT type, WPARAM wparam, LPARAM lparam)
     {
-        auto &events = GetOrSetEventBufferr(window, type, lparam);
+        auto &events = GetOrSetEventBuffer(window, type, lparam);
 
         switch (type)
         {
@@ -123,22 +101,35 @@ namespace Eternal
         assert(success == TRUE);
     }
 
-    WindowClass::WindowClass(GuiThread guiThread, HINSTANCE instance, LPCWSTR className):
-        m_GuiThread(std::move(guiThread)),
+    WindowClass::WindowClass(HINSTANCE instance, LPCWSTR className):
         m_Instance(instance),
         m_ClassName(className, Deleter(instance))
     {
     }
 
-    NativeWindowHandle WindowClass::Instanciate(const WindowSettings &settings)
+    HWND WindowClass::Instanciate(const WindowSettings &settings, EventBuffer &events)
     {
-        auto events = std::make_unique<EventBuffer>();
-        auto createHandle = [&] { return CreateNativeWindowHandle(m_Instance, m_ClassName.get(), settings, *events); };
-        auto handle = m_GuiThread.Run(createHandle);
-        return NativeWindowHandle(m_GuiThread, handle, std::move(events));
+        auto options = DWORD(0);
+        auto title = ToUtf16(settings.Title);
+        auto style = WS_OVERLAPPEDWINDOW;
+        auto x = static_cast<int>(settings.Position[0]);
+        auto y = static_cast<int>(settings.Position[1]);
+        auto width = static_cast<int>(settings.Size[0]);
+        auto height = static_cast<int>(settings.Size[1]);
+        auto *parent = HWND(nullptr);
+        auto *menu = HMENU(nullptr);
+
+        auto *window = CreateWindowExW(options, m_ClassName.get(), title.c_str(), style, x, y, width, height, parent, menu, m_Instance, &events);
+
+        if (window == nullptr)
+        {
+            throw LastErrorToException("Failed to create window");
+        }
+
+        return window;
     }
 
-    WindowClass CreateWindowClass(GuiThread guiThread, HINSTANCE instance, std::string_view name)
+    WindowClass CreateWindowClass(HINSTANCE instance, std::string_view name)
     {
         auto wname = ToUtf16(name);
 
@@ -157,6 +148,19 @@ namespace Eternal
 
         const auto *className = CastIntToPtr<const wchar_t>(atom);
 
-        return WindowClass(std::move(guiThread), instance, className);
+        return WindowClass(instance, className);
+    }
+
+    NativeWindowManager::NativeWindowManager(GuiThread guiThread, WindowClass windowClass):
+        m_GuiThread(std::move(guiThread)),
+        m_WindowClass(std::move(windowClass))
+    {
+    }
+
+    NativeWindowHandle NativeWindowManager::CreateWindowHandle(const WindowSettings &settings)
+    {
+        auto events = std::make_unique<EventBuffer>();
+        auto handle = m_GuiThread.Run([&] { return m_WindowClass.Instanciate(settings, *events); });
+        return NativeWindowHandle(m_GuiThread, handle, std::move(events));
     }
 }
