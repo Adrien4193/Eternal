@@ -78,10 +78,6 @@ private:
     {
         m_Logger->Info("Window input");
     }
-
-    void On(const auto &)
-    {
-    }
 };
 
 int main()
