@@ -11,5 +11,7 @@ list(APPEND HEADERS Platform.h)
 
 eternal_library(Platform "${HEADERS}" "${SOURCES}")
 
+target_link_libraries(Platform PUBLIC Core)
+
 string(TOUPPER ${PLATFORM} PLATFORM_UPPERCASE)
 target_compile_definitions(Platform PUBLIC "ETERNAL_PLATFORM_${PLATFORM_UPPERCASE}")

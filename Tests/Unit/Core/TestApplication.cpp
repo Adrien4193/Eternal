@@ -10,23 +10,16 @@ int main()
 
     test["Run"] = []
     {
-        auto application = Application();
-
         auto started = false;
         auto stopped = false;
         auto updated = 0;
 
-        auto update = [&]
-        {
-            if (++updated == 3)
-            {
-                application.Quit();
-            }
-        };
-
-        application.OnStart([&] { started = true; });
-        application.OnStop([&] { stopped = true; });
-        application.OnUpdate(update);
+        auto application = Application({
+            .IsRunning = [&] { return updated < 3; },
+            .Start = [&] { started = true; },
+            .Stop = [&] { stopped = true; },
+            .Update = [&] { ++updated; },
+        });
 
         application.Run();
 

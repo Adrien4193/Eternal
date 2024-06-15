@@ -25,16 +25,19 @@ namespace
     HANDLE CreateEventHandle()
     {
         auto *handle = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+
         if (handle == nullptr)
         {
             throw LastErrorToException("Failed to create event");
         }
+
         return handle;
     }
 
     void Wait(HANDLE event)
     {
         auto code = WaitForSingleObjectEx(event, INFINITE, FALSE);
+
         if (code != WAIT_OBJECT_0)
         {
             throw LastErrorToException("Failed to wait for event");
@@ -44,6 +47,7 @@ namespace
     void Notify(HANDLE event)
     {
         auto success = SetEvent(event);
+
         if (success == FALSE)
         {
             throw LastErrorToException("Failed to set event");
@@ -54,6 +58,7 @@ namespace
     {
         auto wparam = reinterpret_cast<WPARAM>(&task);
         auto success = PostThreadMessageW(threadId, GuiEventId, wparam, 0);
+
         if (success == FALSE)
         {
             throw LastErrorToException("Failed to post message to GUI thread");
@@ -62,7 +67,7 @@ namespace
 
     void RunTask(WPARAM wparam)
     {
-        const auto &task = *CastIntToPtr<const std::function<void()>>(wparam);
+        const auto &task = *CastIntToPtr<const std::function<void()> *>(wparam);
         task();
     }
 

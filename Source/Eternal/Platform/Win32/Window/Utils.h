@@ -11,9 +11,9 @@ namespace Eternal
     std::string ToUtf8(std::wstring_view value);
     std::wstring ToUtf16(std::string_view value);
 
-    template<typename ToType, typename FromType>
-    ToType *CastIntToPtr(FromType integer)
+    template<typename PtrType, typename IntegerType>
+    PtrType CastIntToPtr(IntegerType integer)
     {
-        return reinterpret_cast<ToType *>(integer); // NOLINT(performance-no-int-to-ptr)
+        return reinterpret_cast<PtrType>(integer); // NOLINT(performance-no-int-to-ptr)
     }
 }

@@ -53,8 +53,11 @@ namespace Eternal
             {
                 return;
             }
+
             auto message = std::format(format, std::forward<Args>(args)...);
+
             auto record = LogRecord(m_Name, m_Level, message);
+
             m_Handler(record);
         }
 

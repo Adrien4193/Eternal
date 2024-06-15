@@ -23,31 +23,10 @@ namespace
         window.Size = e.Size;
     }
 
-    void On(const WindowClose &e, WindowPrivate &window)
+    void On(const auto &e, WindowPrivate &window)
     {
         (void)e;
         (void)window;
-    }
-
-    void PollWindowPrivate(WindowPrivate &window)
-    {
-        auto events = window.Handle.Poll();
-        for (const auto &event : events)
-        {
-            std::visit([&](const auto &e) { On(e, window); }, event);
-        }
-        window.Events = std::move(events);
-    }
-
-    WindowPrivate CreateWindowPrivate(WindowId id, WindowHandle handle, const WindowSettings &settings)
-    {
-        return {
-            .Id = id,
-            .Handle = std::move(handle),
-            .Title = std::string(settings.Title),
-            .Position = settings.Position,
-            .Size = settings.Size,
-        };
     }
 }
 
@@ -61,12 +40,22 @@ namespace Eternal
     WindowRef WindowManager::Add(const WindowSettings &settings)
     {
         auto handle = m_HandleFactory(settings);
+
         auto id = m_IdGenerator.Next();
+
         try
         {
-            auto window = CreateWindowPrivate(id, std::move(handle), settings);
+            auto window = WindowPrivate{
+                .Id = id,
+                .Handle = std::move(handle),
+                .Title = std::string(settings.Title),
+                .Position = settings.Position,
+                .Size = settings.Size,
+            };
+
             auto [i, inserted] = m_Windows.emplace(id, std::move(window));
             assert(inserted);
+
             return WindowRef(i->second);
         }
         catch (...)
@@ -84,10 +73,12 @@ namespace Eternal
     void WindowManager::Remove(WindowId id)
     {
         auto i = m_Windows.find(id);
+
         if (i == m_Windows.end())
         {
             throw std::invalid_argument(std::format("Invalid window ID: {}", id));
         }
+
         m_Windows.erase(i);
         m_IdGenerator.Recycle(id);
     }
@@ -96,7 +87,14 @@ namespace Eternal
     {
         for (auto &[id, window] : m_Windows)
         {
-            PollWindowPrivate(window);
+            auto events = window.Handle.Poll();
+
+            for (const auto &event : events)
+            {
+                std::visit([&](const auto &e) { On(e, window); }, event);
+            }
+
+            window.Events = std::move(events);
         }
     }
 }

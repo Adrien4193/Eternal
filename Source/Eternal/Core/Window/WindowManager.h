@@ -1,11 +1,10 @@
 #pragma once
 
-#include <unordered_map>
+#include <map>
 
 #include <Eternal/Core/Utils/IdGenerator.h>
 
 #include "Window.h"
-#include "WindowSettings.h"
 
 namespace Eternal
 {
@@ -14,7 +13,7 @@ namespace Eternal
     private:
         WindowHandleFactory m_HandleFactory;
         IdGenerator<WindowId> m_IdGenerator;
-        std::unordered_map<WindowId, WindowPrivate> m_Windows;
+        std::map<WindowId, WindowPrivate> m_Windows;
 
     public:
         ETERNAL_CORE_API explicit WindowManager(WindowHandleFactory handleFactory);

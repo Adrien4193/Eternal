@@ -3,17 +3,28 @@
 #include <Eternal/Core/Window/WindowManager.h>
 #include <Eternal/Platform/Platform.h>
 
-class Sandbox : public Eternal::Application
+class Sandbox
 {
 private:
     Eternal::Logger *m_Logger;
     Eternal::WindowRef m_Window;
+    bool m_Running = false;
 
 public:
     explicit Sandbox(Eternal::Logger &logger, Eternal::WindowRef window):
         m_Logger(&logger),
         m_Window(window)
     {
+    }
+
+    bool IsRunning() const
+    {
+        return m_Running;
+    }
+
+    void Quit()
+    {
+        m_Running = false;
     }
 
     void Start()
@@ -23,6 +34,8 @@ public:
         m_Window.SetTitle("Test");
         m_Window.SetPosition({100, 1000});
         m_Window.Resize({200, 200});
+
+        m_Running = true;
     }
 
     void Stop()
@@ -61,6 +74,11 @@ private:
         Quit();
     }
 
+    void On(const Eternal::WindowInput &)
+    {
+        m_Logger->Info("Window input");
+    }
+
     void On(const auto &)
     {
     }
@@ -68,11 +86,10 @@ private:
 
 int main()
 {
-    auto nativeWindowHandleFactory = Eternal::CreateNativeWindowHandleFactory();
-    auto windows = Eternal::WindowManager(nativeWindowHandleFactory);
+    auto windows = Eternal::CreateNativeWindowManager();
 
     auto logger = Eternal::CreateConsoleLogger("Sandbox");
-    logger.SetLevel(Eternal::LogLevel::Debug);
+    logger.SetLevel(Eternal::LogLevel::Info);
 
     auto window = windows.Add({
         .Title = "Sandbox",
@@ -84,12 +101,20 @@ int main()
 
     auto sandbox = Sandbox(logger, window);
 
-    sandbox.OnStart([&] { sandbox.Start(); });
-    sandbox.OnStop([&] { sandbox.Stop(); });
-    sandbox.OnUpdate([&] { windows.Poll(); });
-    sandbox.OnUpdate([&] { sandbox.Update(); });
+    auto update = [&]
+    {
+        windows.Poll();
+        sandbox.Update();
+    };
 
-    sandbox.Run();
+    auto application = Eternal::Application({
+        .IsRunning = [&] { return sandbox.IsRunning(); },
+        .Start = [&] { sandbox.Start(); },
+        .Stop = [&] { sandbox.Stop(); },
+        .Update = update,
+    });
+
+    application.Run();
 
     return 0;
 }

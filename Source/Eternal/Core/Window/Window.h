@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <span>
 #include <string>
 #include <string_view>
@@ -7,11 +8,29 @@
 #include <Eternal/Core/Math/Types.h>
 
 #include "WindowEvents.h"
-#include "WindowHandle.h"
 
 namespace Eternal
 {
     using WindowId = std::size_t;
+
+    struct WindowSettings
+    {
+        std::string_view Title;
+        Vector2 Position;
+        Vector2 Size;
+    };
+
+    struct WindowHandle
+    {
+        void *NativePtr;
+        std::function<std::vector<WindowEvent>()> Poll;
+        std::function<void()> Show;
+        std::function<void(std::string_view)> SetTitle;
+        std::function<void(Vector2)> SetPosition;
+        std::function<void(Vector2)> Resize;
+    };
+
+    using WindowHandleFactory = std::function<WindowHandle(const WindowSettings &)>;
 
     struct WindowPrivate
     {

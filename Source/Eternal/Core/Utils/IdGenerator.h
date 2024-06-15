@@ -18,8 +18,10 @@ namespace Eternal
             {
                 return m_Counter++;
             }
+
             auto id = m_RecycledIds.back();
             m_RecycledIds.pop_back();
+
             return id;
         }
 

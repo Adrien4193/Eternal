@@ -26,5 +26,9 @@ namespace Eternal
     {
     };
 
-    using WindowEvent = std::variant<WindowRename, WindowMove, WindowResize, WindowClose>;
+    struct WindowInput
+    {
+    };
+
+    using WindowEvent = std::variant<WindowRename, WindowMove, WindowResize, WindowClose, WindowInput>;
 }
