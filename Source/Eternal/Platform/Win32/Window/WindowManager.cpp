@@ -16,23 +16,23 @@ namespace
 {
     using namespace Eternal;
 
-    class EventBuffer
+    class MessageBuffer
     {
     private:
         std::mutex m_Mutex;
-        std::vector<WindowEvent> m_Events;
+        std::vector<WindowMessage> m_Messages;
 
     public:
-        void Add(WindowEvent e)
+        void Add(WindowMessage message)
         {
             auto lock = std::lock_guard(m_Mutex);
-            m_Events.push_back(std::move(e));
+            m_Messages.push_back(std::move(message));
         }
 
-        std::vector<WindowEvent> Poll()
+        std::vector<WindowMessage> Poll()
         {
             auto lock = std::lock_guard(m_Mutex);
-            return std::exchange(m_Events, {});
+            return std::exchange(m_Messages, {});
         }
     };
 
@@ -80,8 +80,8 @@ namespace
 
         WindowHandle CreateWindowHandle(const WindowSettings &settings)
         {
-            auto events = std::make_shared<EventBuffer>();
-            auto listener = [=](WindowEvent e) { events->Add(std::move(e)); };
+            auto messages = std::make_shared<MessageBuffer>();
+            auto listener = [=](WindowMessage message) { messages->Add(std::move(message)); };
 
             auto window = m_GuiThread.Run([&] { return m_WindowClass.Instanciate(settings, listener); });
 
@@ -89,7 +89,7 @@ namespace
 
             return WindowHandle{
                 .NativePtr = holder->Get().GetHandle(),
-                .Poll = [=] { return events->Poll(); },
+                .Poll = [=] { return messages->Poll(); },
                 .Show = [=] { holder->Get().Show(SW_NORMAL); },
                 .SetTitle = [=](auto title) { holder->Get().SetTitle(title); },
                 .SetPosition = [=](auto position) { holder->Get().SetPosition(position); },

@@ -1,3 +1,5 @@
+#include <thread>
+
 #include <Eternal/Core/Application.h>
 #include <Eternal/Core/Logging/ConsoleLogger.h>
 #include <Eternal/Core/Window/WindowManager.h>
@@ -22,11 +24,6 @@ public:
         return m_Running;
     }
 
-    void Quit()
-    {
-        m_Running = false;
-    }
-
     void Start()
     {
         m_Logger->Info("Start");
@@ -45,7 +42,9 @@ public:
 
     void Update()
     {
-        m_Logger->Debug("Update");
+        m_Logger->Info("Update");
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         for (const auto &e : m_Window.GetEvents())
         {
@@ -71,7 +70,7 @@ private:
 
     void On(const Eternal::WindowClose &)
     {
-        Quit();
+        m_Running = false;
     }
 
     void On(const Eternal::WindowInput &)

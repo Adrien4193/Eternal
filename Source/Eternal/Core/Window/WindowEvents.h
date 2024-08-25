@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include <string>
 #include <variant>
 
@@ -7,6 +8,12 @@
 
 namespace Eternal
 {
+    class WindowException : public std::runtime_error
+    {
+    public:
+        using std::runtime_error::runtime_error;
+    };
+
     struct WindowRename
     {
         std::string Title;
@@ -31,4 +38,6 @@ namespace Eternal
     };
 
     using WindowEvent = std::variant<WindowRename, WindowMove, WindowResize, WindowClose, WindowInput>;
+
+    using WindowMessage = std::variant<WindowException, WindowEvent>;
 }
