@@ -4,7 +4,7 @@
 
 using namespace Eternal;
 
-int main()
+int main(int argc, const char **argv)
 {
     auto test = CreateTestCase("Application");
 
@@ -28,5 +28,5 @@ int main()
         Assert(updated == 3);
     };
 
-    return test.Run();
+    return test.Run(argc, argv);
 }

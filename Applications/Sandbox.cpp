@@ -7,11 +7,11 @@ class Sandbox
 {
 private:
     Eternal::Logger *m_Logger;
-    Eternal::WindowRef m_Window;
+    Eternal::Window m_Window;
     bool m_Running = false;
 
 public:
-    explicit Sandbox(Eternal::Logger &logger, Eternal::WindowRef window):
+    explicit Sandbox(Eternal::Logger &logger, Eternal::Window window):
         m_Logger(&logger),
         m_Window(window)
     {

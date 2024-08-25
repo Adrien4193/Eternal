@@ -37,7 +37,7 @@ namespace Eternal
     {
     }
 
-    WindowRef WindowManager::Add(const WindowSettings &settings)
+    Window WindowManager::Add(const WindowSettings &settings)
     {
         auto handle = m_HandleFactory(settings);
 
@@ -56,7 +56,7 @@ namespace Eternal
             auto [i, inserted] = m_Windows.emplace(id, std::move(window));
             assert(inserted);
 
-            return WindowRef(i->second);
+            return Window(i->second);
         }
         catch (...)
         {
@@ -65,7 +65,7 @@ namespace Eternal
         }
     }
 
-    void WindowManager::Remove(WindowRef window)
+    void WindowManager::Remove(Window window)
     {
         Remove(window.GetId());
     }

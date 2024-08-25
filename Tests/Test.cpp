@@ -21,13 +21,13 @@ std::string FormatFailureInfo(const FailureInfo &info)
     const auto &source = info.Source;
     const auto *file = source.file_name();
     auto line = source.line();
+
     return std::format("Test case '{}.{}' failed {}:{}.", testCase, subtest, file, line);
 }
 
 void PrintFailureInfo(const FailureInfo &info)
 {
-    auto message = FormatFailureInfo(info);
-    std::cout << message << '\n';
+    std::cout << FormatFailureInfo(info) << '\n';
 }
 
 TestCase::TestCase(std::string name, FailureHandler handler):
@@ -36,8 +36,11 @@ TestCase::TestCase(std::string name, FailureHandler handler):
 {
 }
 
-int TestCase::Run()
+int TestCase::Run(int argc, const char **argv)
 {
+    (void)argc;
+    (void)argv;
+
     for (const auto &[name, test] : m_Tests)
     {
         try
@@ -51,21 +54,26 @@ int TestCase::Run()
                 .SubTest = name,
                 .Source = e.GetSource(),
             });
+
             return -1;
         }
     }
+
     return 0;
 }
 
 std::function<void()> &TestCase::operator[](std::string name)
 {
     auto i = m_Tests.find(name);
+
     if (i != m_Tests.end())
     {
         auto message = std::format("Test '{}' declared twice", name);
         throw std::invalid_argument(message);
     }
+
     auto [j, inserted] = m_Tests.emplace(std::move(name), [] {});
+
     return j->second;
 }
 

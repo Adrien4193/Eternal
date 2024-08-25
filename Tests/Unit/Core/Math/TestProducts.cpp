@@ -4,7 +4,7 @@
 
 using namespace Eternal;
 
-int main()
+int main(int argc, const char **argv)
 {
     auto test = CreateTestCase("Products");
 
@@ -31,5 +31,5 @@ int main()
         Assert(Multiply(left, right) == ref);
     };
 
-    return test.Run();
+    return test.Run(argc, argv);
 }

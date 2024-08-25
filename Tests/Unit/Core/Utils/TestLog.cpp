@@ -4,7 +4,7 @@
 
 using namespace Eternal;
 
-int main()
+int main(int argc, const char **argv)
 {
     auto test = CreateTestCase("Log");
 
@@ -20,14 +20,13 @@ int main()
 
     test["FormatRecord"] = []
     {
-        auto record = LogRecord();
-        record.Name = "Test";
-        record.Level = LogLevel::Debug;
-        record.Message = "This is a test.";
+        auto message = FormatLogRecord({
+            .Name = "Test",
+            .Level = LogLevel::Debug,
+            .Message = "This is a test.",
+        });
 
-        auto message = FormatLogRecord(record);
-        const auto *expected = "[Debug][Test]: This is a test.";
-        Assert(message == expected);
+        Assert(message == "[Debug][Test]: This is a test.");
     };
 
     test["Logger"] = []
@@ -50,5 +49,5 @@ int main()
         Assert(called);
     };
 
-    return test.Run();
+    return test.Run(argc, argv);
 }

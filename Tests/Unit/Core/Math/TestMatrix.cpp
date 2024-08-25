@@ -4,7 +4,7 @@
 
 using namespace Eternal;
 
-int main()
+int main(int argc, const char **argv)
 {
     auto test = CreateTestCase("Matrix");
 
@@ -126,5 +126,5 @@ int main()
         Assert(count == 21);
     };
 
-    return test.Run();
+    return test.Run(argc, argv);
 }

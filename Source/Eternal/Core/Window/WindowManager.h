@@ -18,8 +18,8 @@ namespace Eternal
     public:
         ETERNAL_CORE_API explicit WindowManager(WindowHandleFactory handleFactory);
 
-        ETERNAL_CORE_API WindowRef Add(const WindowSettings &settings);
-        ETERNAL_CORE_API void Remove(WindowRef window);
+        ETERNAL_CORE_API Window Add(const WindowSettings &settings);
+        ETERNAL_CORE_API void Remove(Window window);
         ETERNAL_CORE_API void Remove(WindowId id);
         ETERNAL_CORE_API void Poll();
     };

@@ -42,7 +42,7 @@ private:
 public:
     explicit TestCase(std::string name, FailureHandler handler);
 
-    int Run();
+    int Run(int argc, const char **argv);
 
     std::function<void()> &operator[](std::string name);
 };
@@ -62,5 +62,6 @@ void AssertThrow(CallableType &&callable, std::source_location source = std::sou
     {
         return;
     }
+
     throw AssertionFailed(source);
 }
