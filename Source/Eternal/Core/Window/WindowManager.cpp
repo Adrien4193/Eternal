@@ -30,15 +30,14 @@ namespace
 
 namespace Eternal
 {
-    WindowManager::WindowManager(WindowHandleFactory handleFactory):
-        m_HandleFactory(std::move(handleFactory))
+    WindowManager::WindowManager(WindowFactory handleFactory):
+        m_Factory(std::move(handleFactory))
     {
     }
 
     Window WindowManager::Add(const WindowSettings &settings)
     {
-        auto handle = m_HandleFactory(settings);
-
+        auto handle = m_Factory(settings);
         auto id = m_IdGenerator.Next();
 
         try

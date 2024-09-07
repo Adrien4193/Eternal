@@ -75,16 +75,25 @@ namespace Eternal
         return Parse(input);
     }
 
-    void RegisterMouseInputDevice(HWND window)
+    void RegisterInputDevices(HWND window)
     {
-        auto device = RAWINPUTDEVICE{
+        auto mouse = RAWINPUTDEVICE{
             .usUsagePage = HID_USAGE_PAGE_GENERIC,
             .usUsage = HID_USAGE_GENERIC_MOUSE,
             .dwFlags = RIDEV_DEVNOTIFY,
             .hwndTarget = window,
         };
 
-        auto success = RegisterRawInputDevices(&device, 1, sizeof(device));
+        auto keyboard = RAWINPUTDEVICE{
+            .usUsagePage = HID_USAGE_PAGE_GENERIC,
+            .usUsage = HID_USAGE_GENERIC_KEYBOARD,
+            .dwFlags = RIDEV_DEVNOTIFY | RIDEV_NOLEGACY,
+            .hwndTarget = window,
+        };
+
+        auto devices = std::array<RAWINPUTDEVICE, 2>{mouse, keyboard};
+
+        auto success = RegisterRawInputDevices(devices.data(), UINT(devices.size()), sizeof(RAWINPUTDEVICE));
 
         if (success != TRUE)
         {

@@ -9,17 +9,17 @@
 
 namespace Eternal
 {
-    class NativeWindowManager
+    class NativeWindowFactory
     {
     private:
         GuiThread m_GuiThread;
         WindowClass m_WindowClass;
 
     public:
-        explicit NativeWindowManager(GuiThread guiThread, WindowClass windowClass);
+        explicit NativeWindowFactory(GuiThread guiThread, WindowClass windowClass);
 
         WindowHandle CreateWindowHandle(const WindowSettings &settings);
     };
 
-    NativeWindowManager CreateNativeWindowManager(HINSTANCE instance);
+    WindowFactory CreateNativeWindowFactory(HINSTANCE instance);
 }

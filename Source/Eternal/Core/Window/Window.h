@@ -30,7 +30,7 @@ namespace Eternal
         std::function<void(Vector2)> Resize;
     };
 
-    using WindowHandleFactory = std::function<WindowHandle(const WindowSettings &)>;
+    using WindowFactory = std::function<WindowHandle(const WindowSettings &)>;
 
     struct WindowPrivate
     {

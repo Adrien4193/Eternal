@@ -1,4 +1,4 @@
-#include "NativeWindowManager.h"
+#include "NativeWindowFactory.h"
 
 #include <memory>
 #include <mutex>
@@ -66,20 +66,20 @@ namespace
 
 namespace Eternal
 {
-    NativeWindowManager::NativeWindowManager(GuiThread guiThread, WindowClass windowClass):
+    NativeWindowFactory::NativeWindowFactory(GuiThread guiThread, WindowClass windowClass):
         m_GuiThread(std::move(guiThread)),
         m_WindowClass(std::move(windowClass))
     {
     }
 
-    WindowHandle NativeWindowManager::CreateWindowHandle(const WindowSettings &settings)
+    WindowHandle NativeWindowFactory::CreateWindowHandle(const WindowSettings &settings)
     {
         auto events = std::make_shared<EventBuffer>();
         auto listener = [=](auto event) { events->Add(std::move(event)); };
 
         auto window = m_GuiThread.Run([&] { return m_WindowClass.Instanciate(settings, listener); });
 
-        RegisterMouseInputDevice(window.GetHandle());
+        RegisterInputDevices(window.GetHandle());
 
         auto holder = std::make_shared<WindowHolder>(m_GuiThread, std::move(window));
 
@@ -93,11 +93,13 @@ namespace Eternal
         };
     }
 
-    NativeWindowManager CreateNativeWindowManager(HINSTANCE instance)
+    WindowFactory CreateNativeWindowFactory(HINSTANCE instance)
     {
         auto guiThread = StartGuiThread();
         auto windowClass = CreateWindowClass(instance, "Eternal");
 
-        return NativeWindowManager(std::move(guiThread), std::move(windowClass));
+        auto manager = std::make_shared<NativeWindowFactory>(std::move(guiThread), std::move(windowClass));
+
+        return [=](const auto &settings) { return manager->CreateWindowHandle(settings); };
     }
 }
