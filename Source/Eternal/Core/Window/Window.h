@@ -23,7 +23,7 @@ namespace Eternal
     struct WindowHandle
     {
         void *NativePtr;
-        std::function<std::vector<WindowMessage>()> Poll;
+        std::function<std::vector<WindowEvent>()> Poll;
         std::function<void()> Show;
         std::function<void(std::string_view)> SetTitle;
         std::function<void(Vector2)> SetPosition;

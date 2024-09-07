@@ -3,7 +3,7 @@
 #include <cassert>
 #include <memory>
 
-#include "Utils.h"
+#include <Eternal/Platform/Win32/Utils.h>
 
 namespace
 {

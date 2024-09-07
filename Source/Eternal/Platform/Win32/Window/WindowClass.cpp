@@ -1,6 +1,6 @@
 #include "WindowClass.h"
 
-#include "Utils.h"
+#include <Eternal/Platform/Win32/Utils.h>
 
 namespace
 {

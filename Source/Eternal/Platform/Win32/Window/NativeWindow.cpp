@@ -1,7 +1,8 @@
 #include "NativeWindow.h"
 
+#include <Eternal/Platform/Win32/Utils.h>
+
 #include "RawInput.h"
-#include "Utils.h"
 
 namespace
 {
@@ -46,13 +47,9 @@ namespace
             auto event = ParseRawInput(lparam);
             listener(std::move(event));
         }
-        catch (const WindowException &e)
-        {
-            listener(e);
-        }
         catch (...)
         {
-            listener(WindowException("Unexpected window error"));
+            listener(WindowError(std::current_exception()));
         }
     }
 }

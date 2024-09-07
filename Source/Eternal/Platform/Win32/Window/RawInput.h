@@ -7,4 +7,5 @@
 namespace Eternal
 {
     WindowInput ParseRawInput(LPARAM lparam);
+    void RegisterMouseInputDevice(HWND window);
 }

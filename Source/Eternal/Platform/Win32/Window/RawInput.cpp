@@ -2,7 +2,9 @@
 
 #include <vector>
 
-#include "Utils.h"
+#include <hidusage.h>
+
+#include <Eternal/Platform/Win32/Utils.h>
 
 namespace
 {
@@ -25,38 +27,9 @@ namespace
         (void)hid;
         return WindowInput();
     }
-}
 
-namespace Eternal
-{
-    WindowInput ParseRawInput(LPARAM lparam)
+    WindowInput Parse(const RAWINPUT &input)
     {
-        static constexpr auto headerSize = sizeof(RAWINPUTHEADER);
-
-        auto handle = CastIntToPtr<HRAWINPUT>(lparam);
-
-        auto size = UINT(0);
-
-        auto status = GetRawInputData(handle, RID_INPUT, nullptr, &size, headerSize);
-
-        if (status == UINT(-1))
-        {
-            throw WindowException("Failed to get raw input data size");
-        }
-
-        auto bytes = std::vector<char>(size);
-
-        auto data = bytes.data();
-
-        auto written = GetRawInputData(handle, RID_INPUT, data, &size, headerSize);
-
-        if (written != size)
-        {
-            throw WindowException("Failed to get raw input data");
-        }
-
-        const auto &input = *reinterpret_cast<const RAWINPUT *>(data);
-
         switch (input.header.dwType)
         {
         case RIM_TYPEMOUSE:
@@ -66,7 +39,56 @@ namespace Eternal
         case RIM_TYPEHID:
             return ParseHid(input.data.hid);
         default:
-            throw WindowException("Unknown raw input type");
+            throw std::invalid_argument("Unknown raw input type");
+        }
+    }
+}
+
+namespace Eternal
+{
+    WindowInput ParseRawInput(LPARAM lparam)
+    {
+        static constexpr auto headerSize = UINT(sizeof(RAWINPUTHEADER));
+
+        auto handle = CastIntToPtr<HRAWINPUT>(lparam);
+
+        auto size = UINT(0);
+        auto status = GetRawInputData(handle, RID_INPUT, nullptr, &size, headerSize);
+
+        if (status == UINT(-1))
+        {
+            throw std::runtime_error("Failed to get raw input data size");
+        }
+
+        auto bytes = std::vector<char>(size);
+        auto data = bytes.data();
+
+        auto written = GetRawInputData(handle, RID_INPUT, data, &size, headerSize);
+
+        if (written != size)
+        {
+            throw std::runtime_error("Failed to get raw input data");
+        }
+
+        const auto &input = *reinterpret_cast<const RAWINPUT *>(data);
+
+        return Parse(input);
+    }
+
+    void RegisterMouseInputDevice(HWND window)
+    {
+        auto device = RAWINPUTDEVICE{
+            .usUsagePage = HID_USAGE_PAGE_GENERIC,
+            .usUsage = HID_USAGE_GENERIC_MOUSE,
+            .dwFlags = RIDEV_DEVNOTIFY,
+            .hwndTarget = window,
+        };
+
+        auto success = RegisterRawInputDevices(&device, 1, sizeof(device));
+
+        if (success != TRUE)
+        {
+            throw LastErrorToException("Failed to register raw input device");
         }
     }
 }

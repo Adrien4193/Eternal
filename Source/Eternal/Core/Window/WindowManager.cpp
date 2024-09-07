@@ -23,11 +23,7 @@ namespace
         window.Size = e.Size;
     }
 
-    void On(const WindowClose &, WindowPrivate &)
-    {
-    }
-
-    void On(const WindowInput &, WindowPrivate &)
+    void On(const auto &, WindowPrivate &)
     {
     }
 }
@@ -89,27 +85,11 @@ namespace Eternal
     {
         for (auto &[id, window] : m_Windows)
         {
-            auto messages = window.Handle.Poll();
+            window.Events = window.Handle.Poll();
 
-            auto events = std::vector<WindowEvent>();
-
-            for (const auto &message : messages)
+            for (const auto &event : window.Events)
             {
-                if (const auto *event = std::get_if<WindowEvent>(&message))
-                {
-                    std::visit([&](const auto &e) { On(e, window); }, *event);
-                    events.push_back(*event);
-                }
-            }
-
-            window.Events = std::move(events);
-
-            for (const auto &message : messages)
-            {
-                if (const auto *e = std::get_if<WindowException>(&message))
-                {
-                    throw *e;
-                }
+                std::visit([&](const auto &e) { On(e, window); }, event);
             }
         }
     }

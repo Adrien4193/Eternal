@@ -8,10 +8,9 @@
 
 namespace Eternal
 {
-    class WindowException : public std::runtime_error
+    struct WindowError
     {
-    public:
-        using std::runtime_error::runtime_error;
+        std::exception_ptr exception;
     };
 
     struct WindowRename
@@ -37,7 +36,5 @@ namespace Eternal
     {
     };
 
-    using WindowEvent = std::variant<WindowRename, WindowMove, WindowResize, WindowClose, WindowInput>;
-
-    using WindowMessage = std::variant<WindowException, WindowEvent>;
+    using WindowEvent = std::variant<WindowError, WindowRename, WindowMove, WindowResize, WindowClose, WindowInput>;
 }

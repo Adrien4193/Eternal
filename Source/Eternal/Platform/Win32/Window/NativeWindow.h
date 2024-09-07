@@ -10,7 +10,7 @@
 
 namespace Eternal
 {
-    using WindowListener = std::function<void(WindowMessage)>;
+    using WindowListener = std::function<void(WindowEvent)>;
 
     struct NativeWindowMessage
     {

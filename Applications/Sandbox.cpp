@@ -42,17 +42,22 @@ public:
 
     void Update()
     {
-        m_Logger->Info("Update");
+        m_Logger->Debug("Update");
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        for (const auto &e : m_Window.GetEvents())
+        for (const auto &event : m_Window.GetEvents())
         {
-            std::visit([this](const auto &e) { On(e); }, e);
+            std::visit([this](const auto &e) { On(e); }, event);
         }
     }
 
 private:
+    void On(const Eternal::WindowError &e)
+    {
+        std::rethrow_exception(e.exception);
+    }
+
     void On(const Eternal::WindowMove &e)
     {
         m_Logger->Info("Window moved: [{}, {}]", e.Position[0], e.Position[1]);
@@ -70,6 +75,7 @@ private:
 
     void On(const Eternal::WindowClose &)
     {
+        m_Logger->Info("Window closed");
         m_Running = false;
     }
 
@@ -81,7 +87,7 @@ private:
 
 int main()
 {
-    auto windows = Eternal::CreateNativeWindowManager();
+    auto windows = Eternal::CreateWindowManager();
 
     auto logger = Eternal::CreateConsoleLogger("Sandbox");
     logger.SetLevel(Eternal::LogLevel::Info);

@@ -32,7 +32,7 @@ namespace Eternal
             auto promise = std::promise<ResultType>();
             auto future = promise.get_future();
 
-            auto wrapper = [&]
+            auto runTask = std::function<void()>([&]
             {
                 try
                 {
@@ -50,11 +50,9 @@ namespace Eternal
                 {
                     promise.set_exception(std::current_exception());
                 }
-            };
+            });
 
-            auto function = std::function<void()>(wrapper);
-
-            Schedule(function);
+            Schedule(runTask);
 
             return future.get();
         }
