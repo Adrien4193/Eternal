@@ -46,10 +46,7 @@ public:
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        for (const auto &event : m_Window.GetEvents())
-        {
-            std::visit([this](const auto &e) { On(e); }, event);
-        }
+        m_Window.On([this](const auto &e) { On(e); });
     }
 
 private:

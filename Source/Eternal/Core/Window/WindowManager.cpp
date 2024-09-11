@@ -64,17 +64,14 @@ namespace Eternal
         {
             window.Events = window.Handle.Poll();
 
-            for (const auto &event : window.Events)
-            {
-                std::visit(
-                    Overload{
-                        [&](const WindowRename &e) { window.Title = e.Title; },
-                        [&](const WindowMove &e) { window.Position = e.Position; },
-                        [&](const WindowResize &e) { window.Size = e.Size; },
-                        [](const auto &) {},
-                    },
-                    event);
-            }
+            OnWindowEvent(
+                window.Events,
+                Overload{
+                    [&](const WindowRename &e) { window.Title = e.Title; },
+                    [&](const WindowMove &e) { window.Position = e.Position; },
+                    [&](const WindowResize &e) { window.Size = e.Size; },
+                    [](const auto &) {},
+                });
         }
     }
 }

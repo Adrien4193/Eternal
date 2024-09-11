@@ -60,5 +60,10 @@ namespace Eternal
         ETERNAL_CORE_API Vector2 GetSize() const;
         ETERNAL_CORE_API void Resize(Vector2 size);
         ETERNAL_CORE_API std::span<const WindowEvent> GetEvents() const;
+
+        void On(WindowEventHandler auto &&handler) const
+        {
+            OnWindowEvent(m_Window->Events, handler);
+        }
     };
 }
