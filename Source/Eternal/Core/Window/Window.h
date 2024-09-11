@@ -52,7 +52,6 @@ namespace Eternal
 
         ETERNAL_CORE_API WindowId GetId() const;
         ETERNAL_CORE_API void *GetNativeHandle() const;
-        ETERNAL_CORE_API std::span<const WindowEvent> GetEvents() const;
         ETERNAL_CORE_API void Show();
         ETERNAL_CORE_API std::string_view GetTitle() const;
         ETERNAL_CORE_API void SetTitle(std::string_view title);
@@ -60,5 +59,6 @@ namespace Eternal
         ETERNAL_CORE_API void SetPosition(Vector2 position);
         ETERNAL_CORE_API Vector2 GetSize() const;
         ETERNAL_CORE_API void Resize(Vector2 size);
+        ETERNAL_CORE_API std::span<const WindowEvent> GetEvents() const;
     };
 }

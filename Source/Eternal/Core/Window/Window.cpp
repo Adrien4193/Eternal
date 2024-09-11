@@ -17,11 +17,6 @@ namespace Eternal
         return m_Window->Handle.NativePtr;
     }
 
-    std::span<const WindowEvent> Window::GetEvents() const
-    {
-        return m_Window->Events;
-    }
-
     void Window::Show()
     {
         m_Window->Handle.Show();
@@ -55,5 +50,10 @@ namespace Eternal
     void Window::Resize(Vector2 size)
     {
         m_Window->Handle.Resize(size);
+    }
+
+    std::span<const WindowEvent> Window::GetEvents() const
+    {
+        return m_Window->Events;
     }
 }

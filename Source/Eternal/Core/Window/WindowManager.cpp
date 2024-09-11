@@ -4,29 +4,7 @@
 #include <format>
 #include <stdexcept>
 
-namespace
-{
-    using namespace Eternal;
-
-    void On(const WindowRename &e, WindowPrivate &window)
-    {
-        window.Title = e.Title;
-    }
-
-    void On(const WindowMove &e, WindowPrivate &window)
-    {
-        window.Position = e.Position;
-    }
-
-    void On(const WindowResize &e, WindowPrivate &window)
-    {
-        window.Size = e.Size;
-    }
-
-    void On(const auto &, WindowPrivate &)
-    {
-    }
-}
+#include <Eternal/Core/Utils/Overload.h>
 
 namespace Eternal
 {
@@ -88,7 +66,14 @@ namespace Eternal
 
             for (const auto &event : window.Events)
             {
-                std::visit([&](const auto &e) { On(e, window); }, event);
+                std::visit(
+                    Overload{
+                        [&](const WindowRename &e) { window.Title = e.Title; },
+                        [&](const WindowMove &e) { window.Position = e.Position; },
+                        [&](const WindowResize &e) { window.Size = e.Size; },
+                        [](const auto &) {},
+                    },
+                    event);
             }
         }
     }
