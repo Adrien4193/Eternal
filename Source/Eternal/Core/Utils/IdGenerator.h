@@ -10,32 +10,32 @@ namespace Eternal
     class IdGenerator
     {
     private:
-        T m_Start;
-        T m_Stop;
+        T m_Min;
+        T m_Max;
         T m_Counter;
         std::vector<T> m_RecycledIds;
 
     public:
-        explicit IdGenerator(T start = T(0), T stop = std::numeric_limits<T>::max()):
-            m_Start(start),
-            m_Stop(stop),
-            m_Counter(start)
+        explicit IdGenerator(T min = T(0), T max = std::numeric_limits<T>::max()):
+            m_Min(min),
+            m_Max(max),
+            m_Counter(min)
         {
         }
 
-        T GetStart() const
+        T GetMin() const
         {
-            return m_Start;
+            return m_Min;
         }
 
-        T GetStop() const
+        T GetMax() const
         {
-            return m_Stop;
+            return m_Max;
         }
 
         void Reset()
         {
-            m_Counter = m_Start;
+            m_Counter = m_Min;
             m_RecycledIds.clear();
         }
 
@@ -48,7 +48,7 @@ namespace Eternal
                 return id;
             }
 
-            if (m_Counter >= m_Stop)
+            if (m_Counter >= m_Max)
             {
                 throw std::runtime_error("No more IDs available");
             }

@@ -29,7 +29,7 @@ public:
         m_Logger->Info("Start");
 
         m_Window.SetTitle("Test");
-        m_Window.SetPosition({100, 1000});
+        m_Window.SetPosition({100, 1'000});
         m_Window.Resize({200, 200});
 
         m_Running = true;
@@ -46,7 +46,10 @@ public:
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        m_Window.On([this](const auto &e) { On(e); });
+        for (const auto &event : m_Window.GetEvents())
+        {
+            std::visit([this](const auto &e) { On(e); }, event);
+        }
     }
 
 private:
@@ -91,7 +94,7 @@ int main()
 
     auto window = windows.Add({
         .Title = "Sandbox",
-        .Position = {1200, 400},
+        .Position = {1'200, 400},
         .Size = {800, 800},
     });
 

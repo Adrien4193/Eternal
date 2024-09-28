@@ -42,8 +42,8 @@ int main(int argc, const char **argv)
         Assert(generator.Next() == 2);
         Assert(generator.Next() == 3);
 
-        Assert(generator.GetStart() == 2);
-        Assert(generator.GetStop() == 10);
+        Assert(generator.GetMin() == 2);
+        Assert(generator.GetMax() == 10);
     };
 
     test["Limits"] = []
